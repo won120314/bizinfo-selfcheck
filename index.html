@@ -1,0 +1,1662 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>정책자금 자가진단</title>
+<meta name="description" content="회사 정보를 넣으면 정책자금 융자 가능 여부와 한도, 신청 가능한 지원사업 공고, 보조금 지원사업 자격을 공고 원문 근거와 함께 바로 보여줍니다. 신청 대행이나 성공보수 없습니다.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%23FBFAF7' stroke='%23A5231D' stroke-width='5'/%3E%3Ctext x='32' y='42' font-size='26' font-weight='bold' text-anchor='middle' fill='%23A5231D' font-family='sans-serif'%3E%EA%B7%BC%EA%B1%B0%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Ccircle cx='32' cy='32' r='28' fill='%23FBFAF7' stroke='%23A5231D' stroke-width='5'/%3E%3Ctext x='32' y='42' font-size='26' font-weight='bold' text-anchor='middle' fill='%23A5231D' font-family='sans-serif'%3E%EA%B7%BC%EA%B1%B0%3C/text%3E%3C/svg%3E">
+<meta name="theme-color" content="#16243F">
+<meta name="apple-mobile-web-app-title" content="정책자금 자가진단">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="정책자금 자가진단">
+<meta property="og:title" content="정책자금 자가진단">
+<meta property="og:description" content="융자 가능 여부·한도·지원사업 공고·보조금 자격을 공고 원문 근거와 함께 확인하세요. 대행 수수료 없습니다.">
+<meta property="og:url" content="https://bizinfo-selfcheck.vercel.app">
+<meta property="og:locale" content="ko_KR">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="정책자금 자가진단">
+<meta name="twitter:description" content="융자 가능 여부·한도·지원사업 공고·보조금 자격을 공고 원문 근거와 함께 확인하세요.">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<style>
+:root{
+  --ink:#16243F; --ink-2:#3A4A66; --paper:#FBFAF7; --surface:#FFFFFF;
+  --seal:#A5231D; --rule:#DCD7CB; --rule-soft:#EBE7DD; --muted:#6E6759;
+  --wash:#F1EDE3; --ok:#1F6B4A; --ok-bg:#EAF3EE; --warn:#9A5B10;
+  --warn-bg:#FAF2E4; --stop-bg:#FBECEA;
+}
+:root:not([data-theme="light"]){
+  @media (prefers-color-scheme: dark){
+    --ink:#E8E4DA; --ink-2:#B4AE9F; --paper:#14161A; --surface:#1B1E24;
+    --seal:#E2665F; --rule:#343941; --rule-soft:#282C33; --muted:#8D8778;
+    --wash:#22262D; --ok:#6DBE96; --ok-bg:#1B2A23; --warn:#D6A057;
+    --warn-bg:#2A2419; --stop-bg:#2C1E1D;
+  }
+}
+:root[data-theme="dark"]{
+  --ink:#E8E4DA; --ink-2:#B4AE9F; --paper:#14161A; --surface:#1B1E24;
+  --seal:#E2665F; --rule:#343941; --rule-soft:#282C33; --muted:#8D8778;
+  --wash:#22262D; --ok:#6DBE96; --ok-bg:#1B2A23; --warn:#D6A057;
+  --warn-bg:#2A2419; --stop-bg:#2C1E1D;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--paper);color:var(--ink);
+  font-family:'Pretendard','Apple SD Gothic Neo',-apple-system,BlinkMacSystemFont,
+              'Noto Sans KR','Malgun Gothic','맑은 고딕',sans-serif;
+  line-height:1.6;-webkit-font-smoothing:antialiased}
+.wrap{max-width:900px;margin:0 auto;padding:0 20px 80px}
+header{padding:36px 0 0}
+.brandrow{display:flex;align-items:center;gap:16px}
+.seal{display:inline-flex;align-items:center;justify-content:center;
+  width:52px;height:52px;border:2.5px solid var(--seal);border-radius:50%;
+  color:var(--seal);font-weight:900;font-size:19px;letter-spacing:-1px;
+  transform:rotate(-8deg);flex:none}
+h1{font-size:25px;font-weight:700;letter-spacing:-.6px;margin:0;line-height:1.3}
+.sub{color:var(--muted);font-size:13.5px;margin:5px 0 0}
+nav{display:flex;margin:28px 0 0;border-bottom:1px solid var(--rule)}
+nav button{appearance:none;background:none;border:0;border-bottom:2px solid transparent;
+  padding:11px 17px;font:inherit;font-size:14.5px;font-weight:500;
+  color:var(--muted);cursor:pointer;margin-bottom:-1px}
+nav button[aria-selected="true"]{color:var(--ink);border-bottom-color:var(--seal);font-weight:700}
+nav button:focus-visible{outline:2px solid var(--seal);outline-offset:-2px}
+h2.step{font-size:14px;font-weight:700;margin:32px 0 4px;padding-bottom:7px;
+  border-bottom:1px solid var(--rule);letter-spacing:-.2px}
+h2.step span{color:var(--seal);margin-right:7px}
+.hint{font-size:12.5px;color:var(--muted);margin:8px 0 14px;line-height:1.7}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}
+.fld label{display:block;font-size:13px;font-weight:500;margin-bottom:5px}
+.fld input,.fld select,textarea{width:100%;padding:9px 11px;font:inherit;font-size:14px;
+  border:1px solid var(--rule);border-radius:2px;background:var(--surface);color:var(--ink)}
+.fld input:focus,.fld select:focus,textarea:focus{outline:2px solid var(--seal);outline-offset:-1px;border-color:var(--seal)}
+.fld small{display:block;font-size:11.5px;color:var(--muted);margin-top:4px}
+textarea{font-size:13px;line-height:1.6;resize:vertical;min-height:132px;font-family:inherit}
+
+/* 재무제표 표 */
+.finwrap{overflow-x:auto;border:1px solid var(--rule);background:var(--surface)}
+table.fin{width:100%;border-collapse:collapse;font-size:13.3px;min-width:480px}
+table.fin th,table.fin td{padding:7px 10px;border-bottom:1px solid var(--rule-soft);text-align:right}
+table.fin th:first-child,table.fin td:first-child{text-align:left;color:var(--muted);font-weight:400;white-space:nowrap}
+table.fin thead th{background:var(--wash);font-weight:700;color:var(--ink);text-align:right;font-size:12.5px}
+table.fin thead th:first-child{text-align:left}
+table.fin input{width:100%;min-width:92px;padding:5px 7px;font:inherit;font-size:13px;text-align:right;
+  border:1px solid transparent;border-radius:2px;background:none;color:var(--ink)}
+table.fin input:hover{border-color:var(--rule)}
+table.fin input:focus{outline:2px solid var(--seal);outline-offset:-1px;background:var(--paper)}
+tr.derived td{background:var(--wash);font-weight:700;color:var(--ink)}
+tr.derived td:first-child{font-weight:400}
+td.bad{color:var(--seal)}
+td.good{color:var(--ok)}
+
+#drop{display:flex;flex-direction:column;gap:5px;align-items:center;text-align:center;
+  padding:26px 20px;margin:0 0 13px;border:2px dashed var(--rule);border-radius:3px;
+  background:var(--surface);cursor:pointer}
+#drop:hover,#drop.hot{border-color:var(--seal);background:var(--wash)}
+#drop:focus-visible{outline:2px solid var(--seal);outline-offset:2px}
+#drop b{font-size:14.5px;font-weight:700;letter-spacing:-.2px}
+#drop span{font-size:12.5px;color:var(--muted);line-height:1.6}
+#drop .tiny{font-size:11.5px;color:var(--ok)}
+#drop.busy{opacity:.6;pointer-events:none}
+.pdfmsg{padding:12px 15px;margin:0 0 13px;font-size:13px;line-height:1.7;border-left:3px solid}
+.pdfmsg.ok{background:var(--ok-bg);border-color:var(--ok);color:var(--ink-2)}
+.pdfmsg.warn{background:var(--warn-bg);border-color:var(--warn);color:var(--ink-2)}
+.pdfmsg.err{background:var(--stop-bg);border-color:var(--seal);color:var(--ink-2)}
+.toolbar{display:flex;gap:9px;align-items:center;flex-wrap:wrap;margin:0 0 11px}
+button.mini{appearance:none;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);
+  padding:7px 14px;font:inherit;font-size:13px;border-radius:2px;cursor:pointer}
+button.mini:hover{background:var(--wash)}
+button.mini.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+button.mini:focus-visible{outline:2px solid var(--seal);outline-offset:1px}
+.unit{display:flex;gap:6px;align-items:center;font-size:12.5px;color:var(--muted)}
+.unit select{padding:6px 9px;font:inherit;font-size:12.5px;border:1px solid var(--rule);
+  border-radius:2px;background:var(--surface);color:var(--ink);width:auto}
+
+.checks{display:grid;grid-template-columns:repeat(2,1fr);gap:2px}
+.chk{display:flex;gap:9px;align-items:flex-start;padding:8px 10px;border-radius:2px;cursor:pointer}
+.chk:hover{background:var(--wash)}
+.chk input{margin:3px 0 0;flex:none;width:15px;height:15px;accent-color:var(--seal)}
+.chk span{font-size:13.2px;line-height:1.55}
+.chk em{display:block;font-style:normal;font-size:11.5px;color:var(--muted);margin-top:2px}
+.chk.auto{background:var(--warn-bg)}
+.auto-badge{display:inline-block;font-size:10.5px;font-weight:700;color:var(--warn);
+  border:1px solid var(--warn);border-radius:2px;padding:0 5px;margin-left:5px;vertical-align:1px}
+
+.act{margin:30px 0 0;display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+button.go{appearance:none;border:0;background:var(--ink);color:var(--paper);
+  padding:13px 30px;font:inherit;font-size:15px;font-weight:700;border-radius:2px;cursor:pointer}
+button.go:focus-visible{outline:2px solid var(--seal);outline-offset:2px}
+button.reset{appearance:none;border:1px solid var(--rule);background:none;color:var(--muted);
+  padding:12px 18px;font:inherit;font-size:14px;border-radius:2px;cursor:pointer}
+
+#result{margin:38px 0 0}
+.verdict{padding:20px 22px;border-left:4px solid;margin-bottom:22px}
+.verdict.stop{background:var(--stop-bg);border-color:var(--seal)}
+.verdict.pass{background:var(--ok-bg);border-color:var(--ok)}
+.verdict .amt{margin:6px 0 0;font-size:13px;font-weight:500;color:var(--ok)}
+.verdict h3{margin:0;font-size:19px;font-weight:700;letter-spacing:-.4px}
+.verdict p{margin:8px 0 0;font-size:13.8px;color:var(--ink-2);line-height:1.75}
+ol.why{margin:14px 0 0;padding-left:20px;font-size:13.5px;line-height:1.85}
+ol.why code{font-size:11.5px;color:var(--muted);font-family:inherit}
+.gauge{border:1px solid var(--rule);background:var(--surface);padding:17px 19px;margin:0 0 20px}
+.gtop{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.gtop b{font-size:14.5px}
+.gtop span{font-size:12.5px;color:var(--muted)}
+.bar{height:26px;background:var(--wash);position:relative;border-radius:2px;overflow:hidden}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--ok);opacity:.85}
+.bar i.over{background:var(--seal)}
+.bar u{position:absolute;top:0;bottom:0;width:2px;background:var(--ink)}
+.glabels{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);margin-top:7px}
+.fund{border:1px solid var(--rule);background:var(--surface);padding:18px 20px;margin:0 0 13px;border-left:3px solid var(--ok)}
+.fund.soft{border-left-color:var(--rule);opacity:.82}
+.fhead{display:flex;justify-content:space-between;align-items:baseline;gap:12px;flex-wrap:wrap}
+.fund h4{margin:0;font-size:16.5px;font-weight:700;letter-spacing:-.3px}
+.fpill{font-size:11.5px;padding:2px 9px;background:var(--wash);color:var(--ink-2);border-radius:2px;flex:none}
+dl.terms{margin:13px 0 0;display:grid;grid-template-columns:78px 1fr;gap:6px 12px;font-size:13.3px}
+dl.terms dt{color:var(--muted);font-weight:400}
+dl.terms dd{margin:0;line-height:1.65}
+.fsrc{margin:13px 0 0;padding-left:11px;border-left:2px solid var(--seal);font-size:12.3px;color:var(--muted);line-height:1.6}
+.est{border:1px solid var(--rule);background:var(--surface);padding:18px 20px;margin:0 0 14px}
+.erow{display:flex;justify-content:space-between;align-items:baseline;padding:5px 0;font-size:13.8px}
+.erow b{font-size:16px;font-weight:700}
+.esrc{margin:9px 0 0;padding-left:11px;border-left:2px solid var(--seal);font-size:12.2px;color:var(--muted);line-height:1.6}
+.etab{width:100%;border-collapse:collapse;margin:15px 0 0;font-size:13.3px}
+.etab th{background:var(--wash);padding:7px 9px;text-align:right;font-size:12.3px;font-weight:700}
+.etab th:first-child{text-align:left}
+.etab td{padding:8px 9px;text-align:right;border-bottom:1px solid var(--rule-soft)}
+.etab td:first-child{text-align:left}
+.etab td b{font-size:14.5px}
+.etab em{font-style:normal;font-size:10.5px;color:var(--ok);font-weight:700}
+.plain{margin:18px 0 0;padding:18px 20px;border:2px solid var(--ink);background:var(--paper)}
+.plain h4{margin:0 0 10px;font-size:15.5px;font-weight:700;letter-spacing:-.3px}
+.plain .lead{margin:0 0 4px;font-size:14.5px;line-height:1.75}
+.plain .etab{margin-top:12px}
+.plain .etab tr.hi td{background:var(--ok-bg);font-weight:700}
+.warn-line{margin:12px 0 0;font-size:13.5px;line-height:1.7;color:var(--seal);font-weight:500}
+.ask{margin:14px 0 0;padding:13px 15px;background:var(--wash);border-left:3px solid var(--seal);
+  font-size:13.5px;line-height:1.75}
+.ask span{display:block;margin-top:5px;font-size:12.7px;color:var(--muted)}
+.ehint{margin:13px 0 0;padding:11px 14px;border-left:3px solid var(--rule);background:var(--wash);
+  font-size:12.7px;line-height:1.7;color:var(--ink-2)}
+.bonus{border:1px dashed var(--rule);padding:15px 18px;margin:18px 0 0;font-size:13.3px;line-height:1.75;color:var(--ink-2)}
+.bonus b{color:var(--ink)}
+.note{margin:28px 0 0;padding:16px 18px;border:1px dashed var(--rule);font-size:13px;color:var(--muted);line-height:1.75}
+.note b{color:var(--ink);font-weight:500}
+.privacy{margin:16px 0 0;padding:13px 16px;background:var(--ok-bg);border-left:3px solid var(--ok);
+  font-size:12.8px;color:var(--ink-2);line-height:1.7}
+footer{margin:46px 0 0;padding-top:18px;border-top:1px solid var(--rule);font-size:12px;color:var(--muted);line-height:1.8}
+[hidden]{display:none !important}
+.frow{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-bottom:9px}
+.feedbar{display:flex;gap:8px;margin:22px 0 12px}
+.feedbar input{flex:1;min-width:0;padding:10px 12px;font:inherit;font-size:14px;
+  border:1px solid var(--rule);border-radius:2px;background:var(--surface);color:var(--ink)}
+.feedbar input:focus{outline:2px solid var(--seal);outline-offset:-1px;border-color:var(--seal)}
+.feedbar button{flex:none;padding:0 14px;font:inherit;font-size:13px;cursor:pointer;
+  border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);border-radius:2px}
+.chip b{font-weight:400;opacity:.55;margin-left:4px;font-size:11.5px}
+.livedot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--ok);margin-right:6px;vertical-align:1px}
+.livedot.off{background:var(--warn)}
+.flabel{font-size:12.5px;color:var(--muted);width:40px;flex:none}
+.chip{appearance:none;border:1px solid var(--rule);background:var(--surface);color:var(--ink-2);
+  border-radius:2px;padding:5px 11px;font:inherit;font-size:13px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.count{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  padding:14px 0 10px;border-bottom:1px solid var(--rule);margin-top:18px}
+.count strong{font-weight:700;font-size:15px}
+.count span{font-size:12.5px;color:var(--muted)}
+ul.list{list-style:none;margin:0;padding:0}
+li.card{border-bottom:1px solid var(--rule-soft);padding:20px 0}
+.meta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:8px}
+.tag{font-size:11.5px;padding:2px 8px;border:1px solid var(--rule);color:var(--muted);border-radius:2px}
+.tag.field{border-color:var(--ink-2);color:var(--ink-2)}
+.dday{font-size:11.5px;font-weight:700;padding:2px 8px;border-radius:2px;background:var(--wash);color:var(--warn)}
+.dday.open{color:var(--ok)}
+.card h3{margin:0;font-size:16.5px;font-weight:500;line-height:1.5;letter-spacing:-.3px}
+.org{font-size:13px;color:var(--muted);margin:7px 0 0}
+.card .terms{font-size:13.5px;color:var(--ink-2);margin:10px 0 0;line-height:1.7}
+.src{display:flex;align-items:center;gap:9px;margin:13px 0 0;padding-left:11px;
+  border-left:2px solid var(--seal);font-size:12.5px;color:var(--muted);flex-wrap:wrap}
+.src a{color:var(--ink);text-decoration:underline;text-underline-offset:2px}
+.empty{padding:44px 0;text-align:center;color:var(--muted);font-size:14px}
+@media (max-width:620px){
+  h1{font-size:21px}
+  .grid,.checks{grid-template-columns:1fr}
+  .wrap{padding:0 16px 60px}
+  dl.terms{grid-template-columns:70px 1fr}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <div class="brandrow">
+    <div class="seal" aria-hidden="true">근거</div>
+    <div>
+      <h1>정책자금 자가진단</h1>
+      <p class="sub">재무제표를 넣으면 융자제한 항목이 자동으로 판정됩니다</p>
+    </div>
+  </div>
+</header>
+
+<nav role="tablist" aria-label="화면 선택">
+  <button role="tab" id="t2" aria-controls="p2" aria-selected="true">정책자금 판정</button>
+  <button role="tab" id="t1" aria-controls="p1" aria-selected="false">지원사업 공고</button>
+  <button role="tab" id="t3" aria-controls="p3" aria-selected="false">보조금 지원사업</button>
+</nav>
+
+<section role="tabpanel" id="p2" aria-labelledby="t2">
+
+  <h2 class="step"><span>1</span>회사 기본 정보</h2>
+  <p class="hint">업종에 따라 허용되는 부채비율이 다릅니다. 주된 사업의 업종을 고르세요. 하위 업종이 있으면 하위 기준이 우선합니다.</p>
+  <div class="grid">
+    <div class="fld" style="grid-column:1/-1">
+      <label for="ksic">업종 (한국표준산업분류 KSIC-11)</label>
+      <select id="ksic"></select>
+      <small id="ksicNote"></small>
+    </div>
+    <div class="fld">
+      <label for="age">업력 (년) <span style="font-weight:400;color:var(--muted)">— 선택</span></label>
+      <input id="age" type="number" min="0" step="0.5" placeholder="예: 8">
+      <small>비워두면 창업기·성장기 자금을 모두 보여줍니다</small>
+    </div>
+    <div class="fld">
+      <label for="emp">상시근로자 수 (명)</label>
+      <input id="emp" type="number" min="0" placeholder="예: 15">
+      <small>소상공인 해당 여부를 가립니다</small>
+    </div>
+    <div class="fld">
+      <label for="region">사업장 소재지</label>
+      <select id="region">
+        <option value="local" selected>지방 (수도권 외)</option>
+        <option value="metro">수도권 (서울·인천·경기)</option>
+      </select>
+      <small>지방은 최대 잔액 한도가 70억으로 우대됩니다</small>
+    </div>
+    <div class="fld">
+      <label for="exbal">기존 정책자금 대출잔액 (억원) <span style="font-weight:400;color:var(--muted)">— 선택</span></label>
+      <input id="exbal" type="number" min="0" step="0.1" placeholder="없으면 0">
+      <small>중진공 정책자금 잔액. 한도에서 차감됩니다</small>
+    </div>
+    <div class="fld">
+      <label for="capex">계획 중인 시설투자액 (억원) <span style="font-weight:400;color:var(--muted)">— 선택</span></label>
+      <input id="capex" type="number" min="0" step="0.1" placeholder="예: 8">
+      <small>기계·설비 구입 등. 넣으면 예상 대출액이 계산됩니다</small>
+    </div>
+  </div>
+
+  <h2 class="step"><span>2</span>재무제표 3개년</h2>
+  <p class="hint">크레탑·나이스 리포트나 세무사에게 받은 표에서 해당 부분을 드래그해 복사한 뒤, 아래 붙여넣기 칸에 넣으세요. 항목명을 찾아 자동으로 채웁니다. 직접 입력해도 됩니다.</p>
+
+  <div id="drop" tabindex="0" role="button" aria-label="PDF 파일 올리기">
+    <b>크레탑·나이스 리포트 PDF를 여기에 끌어다 놓으세요</b>
+    <span>또는 눌러서 파일 선택 · 글자를 읽어 아래 표를 자동으로 채웁니다</span>
+    <span class="tiny">파일은 이 브라우저 안에서만 열립니다. 어디로도 올라가지 않습니다.</span>
+  </div>
+  <input type="file" id="pdfFile" accept="application/pdf,.pdf" hidden>
+  <div id="pdfMsg" class="pdfmsg" hidden></div>
+
+  <div class="toolbar">
+    <button class="mini" id="pasteToggle">붙여넣기로 채우기</button>
+    <button class="mini" id="demo">예시 넣어보기</button>
+    <div class="unit">
+      <label for="unit" style="margin:0">단위</label>
+      <select id="unit">
+        <option value="0.001" selected>천원</option>
+        <option value="1">백만원</option>
+        <option value="0.000001">원</option>
+        <option value="100">억원</option>
+      </select>
+    </div>
+    <div class="unit">
+      <label for="order" style="margin:0">연도 순서</label>
+      <select id="order">
+        <option value="asc" selected>왼쪽이 과거연도</option>
+        <option value="desc">왼쪽이 최근연도</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="pasteBox" hidden style="margin-bottom:14px">
+    <textarea id="raw" placeholder="예)&#10;매출액&#9;3,250&#9;2,980&#9;2,610&#10;영업이익&#9;-45&#9;12&#9;88&#10;이자비용&#9;96&#9;91&#9;84&#10;자산총계&#9;4,120&#9;3,980&#9;3,760&#10;부채총계&#9;3,180&#9;2,940&#9;2,700&#10;자본총계&#9;940&#9;1,040&#9;1,060"></textarea>
+    <div class="toolbar" style="margin:10px 0 0">
+      <button class="mini" id="parse">표에 채우기</button>
+      <span id="parseMsg" style="font-size:12.5px;color:var(--muted)"></span>
+    </div>
+  </div>
+
+  <div class="finwrap">
+    <table class="fin">
+      <thead><tr><th>항목 (단위: 위에서 선택)</th><th id="y1">최근 결산연도</th><th id="y2">직전연도</th><th id="y3">전전연도</th></tr></thead>
+      <tbody id="finBody"></tbody>
+    </table>
+  </div>
+
+  <div class="privacy">
+    입력하신 재무 정보는 이 브라우저 안에서만 계산되고 어디로도 전송되지 않습니다.
+    창을 닫으면 사라집니다.
+  </div>
+
+  <h2 class="step"><span>3</span>융자제한기업 해당 여부</h2>
+  <p class="hint">하나라도 해당하면 자금 종류와 무관하게 신청이 막힙니다. 재무제표로 판정되는 항목은 <b style="color:var(--warn)">자동</b> 표시가 붙고 자동으로 체크됩니다. 실제와 다르면 직접 고치세요.</p>
+  <div class="checks" id="limits"></div>
+
+  <h2 class="step"><span>4</span>해당하는 것을 모두 고르세요</h2>
+  <p class="hint">받을 수 있는 자금의 종류와 한도가 달라집니다.</p>
+  <div class="checks" id="opts"></div>
+
+  <div class="act">
+    <button class="go" id="run">진단하기</button>
+    <button class="reset" id="clr">전부 지우기</button>
+  </div>
+
+  <div id="result"></div>
+
+  <div class="note">
+    <b>이 진단은 신청 자격의 사전 확인입니다.</b>
+    실제 지원 여부는 중진공 현장평가(기술성·사업성)와 관할 지역본부의 예산 잔액에 따라 결정됩니다.
+    최종 확인은 정책자금 전담콜센터 1811-3655 또는 관할 지역본부로 직접 문의하세요.
+  </div>
+</section>
+
+<section role="tabpanel" id="p1" aria-labelledby="t1" hidden>
+  <div class="feedbar">
+    <input id="q" type="search" placeholder="공고명·내용 검색 (예: 수출, 운전자금, 제조)" autocomplete="off">
+    <button id="reload" type="button">새로고침</button>
+  </div>
+  <div class="frow" id="fieldRow"><span class="flabel">분야</span></div>
+  <div class="frow" id="regionRow"><span class="flabel">지역</span></div>
+  <div class="frow"><span class="flabel">마감</span>
+    <button class="chip" data-f="openOnly" data-v="1" aria-pressed="true" type="button">신청 가능만</button>
+    <button class="chip" data-f="openOnly" data-v="" aria-pressed="false" type="button">마감 포함</button>
+  </div>
+  <div class="count"><strong id="cnt">불러오는 중…</strong><span id="srcline">기업마당 지원사업정보 API</span></div>
+  <ul class="list" id="list"></ul>
+  <div class="note" id="feednote"><b>공고는 서버가 하루 단위로 기업마당에서 직접 받아옵니다.</b>
+    이 화면은 공개된 공고 원문을 정리해 보여줄 뿐이며, 신청 대행이나 성공보수를 받지 않습니다.</div>
+</section>
+
+<section role="tabpanel" id="p3" aria-labelledby="t3" hidden>
+
+  <h2 class="step"><span>1</span>판정에 쓰는 값</h2>
+  <p class="hint">앞 화면(정책자금 판정)에 업종과 재무제표를 넣으셨다면 자동으로 가져옵니다. 안 넣으셨으면 아래에 매출만 직접 적어도 판정됩니다.</p>
+  <div class="grid">
+    <div class="fld" style="grid-column:1/-1">
+      <label for="vmfg">주업종</label>
+      <select id="vmfg">
+        <option value="1" selected>제조업 (한국표준산업분류 C)</option>
+        <option value="0">제조업이 아님</option>
+      </select>
+      <small id="vmfgNote">혁신바우처·안전 관련 보조금은 대부분 제조업만 대상입니다</small>
+    </div>
+    <div class="fld">
+      <label for="vsales">3개년 평균 매출액 (억원)</label>
+      <input id="vsales" type="number" min="0" step="0.1" placeholder="예: 42">
+      <small id="vsalesNote">재무제표를 넣으면 자동으로 채워집니다</small>
+    </div>
+    <div class="fld">
+      <label for="vemp">상시근로자 수 (명)</label>
+      <input id="vemp" type="number" min="0" placeholder="예: 19">
+      <small>안전 관련 보조금은 50인 미만이 기준입니다</small>
+    </div>
+    <div class="fld">
+      <label for="vexport">전년도 수출액 (달러)</label>
+      <input id="vexport" type="number" min="0" step="1000" placeholder="없으면 0">
+      <small>수출바우처 트랙을 가립니다. 0이면 내수기업 트랙</small>
+    </div>
+    <div class="fld" style="grid-column:1/-1">
+      <label for="vprem">사업장 소재지 우대구분</label>
+      <select id="vprem">
+        <option value="5" selected>비수도권 일반 (부산 전 지역 포함) · 보조율 +5%</option>
+        <option value="0">수도권 (서울·인천·경기) · 우대 없음</option>
+        <option value="10">농어촌 인구감소지역 中 우대지원지역 · +10%</option>
+        <option value="15">농어촌 인구감소지역 中 특별지원지역 · +15%</option>
+      </select>
+      <small>부산은 15개 자치구와 기장군 전부 비수도권 일반(+5%)입니다</small>
+    </div>
+  </div>
+
+  <h2 class="step"><span>2</span>참여 중인 사업</h2>
+  <p class="hint">2026년 2차 혁신바우처는 아래 사업 참여기업만 신청할 수 있습니다. 안전동행 지원사업은 이 항목과 무관합니다.</p>
+  <div class="checks" id="vjoin"></div>
+
+  <h2 class="step"><span>3</span>신청 제외 대상</h2>
+  <p class="hint">해당하는 항목만 체크하세요. 사업마다 막히는 항목이 다르며, 결과 카드에 어느 사업이 막혔는지 표시됩니다.</p>
+  <div class="checks" id="vblock"></div>
+
+  <div class="act">
+    <button class="go" id="vgo">바우처 판정하기</button>
+    <button class="reset" id="vreset">지우기</button>
+  </div>
+
+  <div id="vresult"></div>
+
+  <div class="note">
+    <b>근거</b> · 중소벤처기업부 공고 제2026-133호 「2026년 중소기업 혁신바우처 사업 2차 지원계획 공고」 —
+    신청 제외 대상(3p), 사업별 지원대상(4p~), 보조율표, [별첨6] 지방기업 우대 분류표(23p).
+    수출바우처는 2026년 수출지원기반활용사업 모집공고 요약 기준입니다.
+    안전동행 지원사업은 고용노동부·한국산업안전보건공단 소관으로, 지원대상 요건(제조업·50인 미만 또는 중소기업 매출기준 이하·산재보험 가입)만 반영했습니다.
+    세 사업 모두 최종 신청 전에 해당 연도 공고문 원문을 확인하세요.
+  </div>
+</section>
+
+<footer>
+  근거 · 2026년도 중소기업 정책자금 융자계획 변경공고(중소벤처기업부 공고 제2026-464호),
+  별표1 융자제외 대상 업종(p40), 별표5 업종별 융자제한 부채비율(p46), 공고 Ⅲ. 유의사항 ①~⑫(p10)<br>
+  이 도구는 공개된 공고 원문을 정리해 보여줍니다. 신청 대행이나 성공보수를 받지 않습니다.
+</footer>
+</div>
+
+<script>
+/* ═══ 별표5 ═══ */
+var KSIC=[
+ {c:"A01",n:"농업",avg:188.0,lim:500.0,cv:1000.0,ex:"none"},
+ {c:"A03",n:"어업",avg:212.7,lim:500.0,cv:1000.0,ex:"none"},
+ {c:"B",n:"광업",avg:199.3,lim:500.0,cv:1000.0,ex:"none"},
+ {c:"C",n:"제조업 (아래 세부업종 외)",avg:113.4,lim:340.2,cv:680.4,ex:"mfg"},
+ {c:"C10",n:"식료품",avg:148.1,lim:444.3,cv:888.6,ex:"none"},
+ {c:"C11",n:"음료",avg:129.2,lim:387.6,cv:775.2,ex:"none"},
+ {c:"C13",n:"섬유제품(의복 제외)",avg:118.5,lim:355.5,cv:711.0,ex:"none"},
+ {c:"C14",n:"의복, 의복액세서리 및 모피제품",avg:118.3,lim:354.9,cv:709.8,ex:"none"},
+ {c:"C15",n:"가죽, 가방 및 신발",avg:109.9,lim:329.7,cv:659.4,ex:"none"},
+ {c:"C16",n:"목재 및 나무제품(가구 제외)",avg:147.4,lim:442.2,cv:884.4,ex:"none"},
+ {c:"C17",n:"펄프, 종이 및 종이제품",avg:114.9,lim:344.7,cv:689.4,ex:"none"},
+ {c:"C18",n:"인쇄 및 기록매체 복제업",avg:116.9,lim:350.7,cv:701.4,ex:"none"},
+ {c:"C19",n:"코크스, 연탄 및 석유정제품",avg:94.4,lim:283.2,cv:566.4,ex:"none"},
+ {c:"C20",n:"화학물질 및 화학제품(의약품 제외)",avg:98.6,lim:295.8,cv:591.6,ex:"none"},
+ {c:"C21",n:"의료용 물질 및 의약품",avg:71.9,lim:215.7,cv:431.4,ex:"none"},
+ {c:"C22",n:"고무제품 및 플라스틱제품",avg:110.6,lim:331.8,cv:663.6,ex:"none"},
+ {c:"C23",n:"비금속 광물제품",avg:92.7,lim:278.1,cv:556.2,ex:"none"},
+ {c:"C24",n:"1차 금속",avg:121.3,lim:363.9,cv:727.8,ex:"none"},
+ {c:"C25",n:"금속가공제품(기계 및 가구 제외)",avg:121.3,lim:363.9,cv:727.8,ex:"none"},
+ {c:"C26",n:"전자부품, 컴퓨터, 영상, 음향 및 통신장비",avg:93.6,lim:280.8,cv:561.6,ex:"none"},
+ {c:"C27",n:"의료, 정밀, 광학기기 및 시계",avg:94.4,lim:283.2,cv:566.4,ex:"none"},
+ {c:"C28",n:"전기장비",avg:103.6,lim:310.8,cv:621.6,ex:"none"},
+ {c:"C29",n:"기타 기계 및 장비",avg:109.3,lim:327.9,cv:655.8,ex:"none"},
+ {c:"C30",n:"자동차 및 트레일러",avg:146.3,lim:438.9,cv:877.8,ex:"none"},
+ {c:"C31",n:"기타 운송장비",avg:196.8,lim:500.0,cv:1000.0,ex:"none"},
+ {c:"C32",n:"가구",avg:161.3,lim:483.9,cv:967.8,ex:"none"},
+ {c:"C33",n:"기타 제품 제조업",avg:116.6,lim:349.8,cv:699.6,ex:"c33"},
+ {c:"C34",n:"산업용기계 및 장비수리업",avg:176.8,lim:500.0,cv:1000.0,ex:"none"},
+ {c:"D35",n:"전기, 가스, 증기 및 공기조절 공급업",avg:368.3,lim:500.0,cv:1000.0,ex:"none"},
+ {c:"E",n:"하수·폐기물 처리, 원료재생 및 환경복원업",avg:106.0,lim:318.0,cv:636.0,ex:"none"},
+ {c:"F",n:"건설업",avg:109.7,lim:329.1,cv:658.2,ex:"con"},
+ {c:"G",n:"도매 및 소매업",avg:131.0,lim:393.0,cv:786.0,ex:"whole"},
+ {c:"H",n:"운수 및 창고업",avg:170.1,lim:500.0,cv:1000.0,ex:"none"},
+ {c:"I",n:"숙박 및 음식점업",avg:350.3,lim:500.0,cv:1000.0,ex:"food"},
+ {c:"J",n:"정보통신업",avg:141.9,lim:425.7,cv:851.4,ex:"ict"},
+ {c:"L",n:"부동산업",avg:424.3,lim:500.0,cv:1000.0,ex:"all"},
+ {c:"M",n:"전문, 과학 및 기술 서비스업",avg:142.6,lim:427.8,cv:855.6,ex:"prof"},
+ {c:"N",n:"사업시설관리·사업지원 및 임대서비스업",avg:208.0,lim:500.0,cv:1000.0,ex:"biz"},
+ {c:"P",n:"교육 서비스업",avg:152.3,lim:456.9,cv:913.8,ex:"edu"},
+ {c:"R",n:"예술, 스포츠 및 여가관련 서비스업",avg:194.4,lim:500.0,cv:1000.0,ex:"art"},
+ {c:"ETC",n:"기타산업",avg:196.3,lim:500.0,cv:1000.0,ex:"etc"}
+];
+var EXWARN={
+ all:{t:"부동산업(68)은 전체가 융자제외 업종입니다.",d:"별표1에서 부동산 투기 우려 업종으로 전면 제외됩니다."},
+ con:{t:"건설업(41~42)은 원칙적으로 융자제외입니다.",d:"단 산업 생산시설 종합건설(41225), 환경설비(41224), 조경(41226), 배관 및 냉난방 공사(42201), 건물용 기계·장비 설치(42202), 승강설비 설치(42203), 방음·방진·내화(42204), 소방시설(42205), 전기 및 통신공사(423)는 지원 가능합니다."},
+ whole:{t:"도소매업 중 일부 세부업종이 제외됩니다.",d:"담배 중개업(46102), 주류·담배 도매업(46331·46333), 성인용품 판매점(47859), 다단계 방문판매(47993), 도박·사행성 기구 중개 및 도소매업이 해당합니다."},
+ food:{t:"주점업(5621)은 융자제외 업종입니다.",d:"일반 음식점업과 숙박업은 지원 가능합니다."},
+ ict:{t:"정보통신업 중 일부가 제외됩니다.",d:"사행성 잡지 발행 및 불건전 게임소프트웨어 개발·공급(58 中), 비디오물 감상실 운영(59142), 가상자산 매매·중개(63992), 온라인게임 아이템 중개(63999 中)가 해당합니다."},
+ prof:{t:"전문서비스업 중 상당수가 제외됩니다.",d:"법무·회계·세무 관련 서비스업(711~712), 회사본부(7151), 수의업(731)이 제외됩니다. 엔지니어링·전문디자인·연구개발업은 지원 가능합니다."},
+ biz:{t:"사업지원·임대업 중 일부가 제외됩니다.",d:"탐정 및 조사 서비스업(75330), 경품용 상품권 발행·판매업(75995·75999 中), 도박·사행성 기구 임대업(76390 中)이 해당합니다."},
+ edu:{t:"교육서비스업 중 상당수가 제외됩니다.",d:"초·중·고등 교육기관 및 특수학교(851~854) 전체와 일반교과·입시 교육(855~856 中)이 제외됩니다. 기술 및 직업훈련 학원(8566)은 지원 가능합니다."},
+ art:{t:"예술·여가업 중 일부가 제외됩니다.",d:"경주장 및 동물 경기장 운영업(91113), 사행시설 관리·운영업(9124), 무도장 운영업(91291)이 해당합니다."},
+ mfg:{t:"제조업 중 두 가지만 제외됩니다.",d:"불건전 영상게임기 제조업(33402 中), 도박기계 및 사행성·불건전 오락기구 제조업(33409 中)."},
+ c33:{t:"기타 제품 제조업 중 33402·33409가 제외됩니다.",d:"불건전 영상게임기, 도박기계 및 사행성·불건전 오락기구 제조업이 해당합니다."},
+ etc:{t:"기타산업에는 제외 업종이 많이 포함됩니다.",d:"금융 및 보험업(64~66, 핀테크 66199는 가능), 공공행정(84), 보건업(86, 사회적경제기업은 가능), 협회 및 단체(94, 중소기업자면 가능), 점술 및 유사서비스업(96992), 가구 내 고용활동(97~98), 국제 및 외국기관(99)이 제외됩니다."},
+ none:null
+};
+
+/* ═══ 재무 항목 ═══ */
+var ROWS=[
+ {k:"sales", n:"매출액",       alias:["매출액","영업수익","총매출","매출"]},
+ {k:"op",    n:"영업이익",     alias:["영업이익","영업손익"]},
+ {k:"net",   n:"당기순이익",   alias:["당기순이익","당기순손익","계속사업이익","순이익"]},
+ {k:"int",   n:"이자비용",     alias:["이자비용","금융원가","금융비용"]},
+ {k:"asset", n:"자산총계",     alias:["자산총계","총자산","자산"]},
+ {k:"debt",  n:"부채총계",     alias:["부채총계","총부채","부채"]},
+ {k:"cap",   n:"자본총계",     alias:["자본총계","자기자본","총자본","자본"]},
+ {k:"rnd",   n:"연구개발비",   alias:["연구개발비","경상연구개발비","경상개발비"], opt:true},
+ {k:"ppe",   n:"유형자산",     alias:["유형자산"], opt:true}
+];
+
+var LIMITS=[
+ {id:"L1",t:"민간금융기관 이용이 가능한 우량기업",d:"상장기업, 신용평가사 BBB등급 이상, 자본총계 200억 또는 자산총계 700억 초과, 중진공 신용위험 최상위 등급(CR1)",ref:"①",auto:true},
+ {id:"L2",t:"휴업 또는 폐업 중",d:"",ref:"②"},
+ {id:"L3",t:"세금을 체납 중",d:"",ref:"③"},
+ {id:"L4",t:"신용정보 등록 기업",d:"연체, 대위변제·대지급, 부도, 관련인, 금융질서문란, 회생·파산 정보가 등록된 경우",ref:"④"},
+ {id:"L5",t:"융자제외 대상 업종을 영위",d:"별표1 해당 업종. 1단계 업종 안내를 먼저 확인하세요",ref:"⑤"},
+ {id:"L6",t:"최근 3년 이내 부정 신청 또는 용도 외 사용",d:"제3자 부당 개입, 허위·부정한 방법의 융자 신청, 운전자금 목적 외 사용, 경영이행약정 위반 등",ref:"⑥"},
+ {id:"L7",t:"사회적 물의를 일으킨 기업",d:"중대재해처벌법 위반, 상습체불, 임직원 자금횡령 등",ref:"⑦"},
+ {id:"L8",t:"최근 3년 이내 정부 R&D 제재처분",d:"제재부가금·환수금·참여제한. 납부 완료 및 참여제한 종료 시 예외",ref:"⑧"},
+ {id:"L11a",t:"2년 연속 적자이면서 자기자본 전액 잠식",d:"업력 5년 초과 기업에 적용",ref:"⑪",auto:true},
+ {id:"L11b",t:"3년 연속 이자보상배율 1.0 미만",d:"금융비용이 없어도 영업손실이면 1.0 미만으로 간주. 업력 5년 초과 적용",ref:"⑪",auto:true},
+ {id:"L12",t:"평가 탈락 또는 지원 포기 후 6개월 미경과",d:"",ref:"⑫"}
+];
+var OPTS=[
+ {id:"O_young",t:"대표자가 만 39세 이하",d:"청년전용창업자금 대상 여부"},
+ {id:"O_tech",t:"사업화하려는 보유 기술이 있음",d:"정부 R&D 성공 기술, 특허·실용신안·저작권, 정부 인증기술(NET 등), 기업부설연구소 개발 기술, 이전받은 기술 등"},
+ {id:"O_focus",t:"중점지원분야를 영위",d:"혁신성장분야, 초격차·신산업, 지역주력산업, 뿌리산업, 소재·부품·장비 (참고1~4)"},
+ {id:"O_export",t:"수출실적이 10만불 미만",d:"내수기업 수출기업화 자금 대상"},
+ {id:"O_mfg",t:"제조업을 영위",d:"소상공인이어도 예외가 인정됩니다"},
+ {id:"O_ax",t:"AI를 개발·도입·활용 중",d:"AX 스프린트 우대트랙 (금리 0.1%p 인하, 최대 한도 60억→100억)"},
+ {id:"O_inno",t:"벤처기업 또는 이노비즈 인증 보유",d:"혁신형 중소기업 해당 (참고7)"},
+ {id:"O_coop",t:"2~3개 이상 기업이 협동화·협업사업 추진",d:"협동화자금 대상. 업력 제한과 부채비율 제한이 적용되지 않습니다"}
+];
+
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){
+ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+function num(id){var v=parseFloat(document.getElementById(id).value);return isNaN(v)?null:v;}
+function chk(id){var e=document.getElementById(id);return e?e.checked:false;}
+function fmt(v,d){return v===null||v===undefined||!isFinite(v)?"—":v.toLocaleString("ko-KR",{maximumFractionDigits:d===undefined?1:d});}
+
+/* ── 업종 ── */
+var sel=document.getElementById("ksic");
+KSIC.forEach(function(k,i){
+  var o=document.createElement("option");
+  o.value=i;o.textContent=(k.c==="ETC"?k.n:k.c+"  "+k.n);sel.appendChild(o);
+});
+sel.selectedIndex=3;
+function ksicNote(){
+  var k=KSIC[sel.value],w=EXWARN[k.ex];
+  var s="제한부채비율 "+k.lim.toFixed(1)+"% · 업종 평균 "+k.avg.toFixed(1)+"%";
+  if(w)s+="  |  "+w.t;
+  document.getElementById("ksicNote").textContent=s;
+}
+sel.addEventListener("change",function(){ksicNote();recalc();});
+ksicNote();
+
+/* ── 재무 표 ── */
+var body=document.getElementById("finBody");
+body.innerHTML=ROWS.map(function(r){
+  return '<tr><td>'+r.n+(r.opt?' <span style="font-size:11px">(선택)</span>':'')+'</td>'+
+    [0,1,2].map(function(i){
+      return '<td><input type="text" inputmode="numeric" data-k="'+r.k+'" data-y="'+i+'" placeholder="—"></td>';
+    }).join("")+'</tr>';
+}).join("")+
+ '<tr class="derived"><td>부채비율</td><td id="d_dr0">—</td><td id="d_dr1">—</td><td id="d_dr2">—</td></tr>'+
+ '<tr class="derived"><td>이자보상배율</td><td id="d_ic0">—</td><td id="d_ic1">—</td><td id="d_ic2">—</td></tr>';
+
+function cell(k,y){
+  var el=document.querySelector('input[data-k="'+k+'"][data-y="'+y+'"]');
+  if(!el)return null;
+  var t=el.value.replace(/[,\s원]/g,"");
+  if(t==="")return null;
+  var neg=/^\(.*\)$/.test(t)||/^[-△▲]/.test(t);
+  t=t.replace(/[()△▲-]/g,"");
+  var v=parseFloat(t);
+  if(isNaN(v))return null;
+  return neg?-v:v;
+}
+function unitMul(){return parseFloat(document.getElementById("unit").value);}
+function val(k,y){var c=cell(k,y);return c===null?null:c*unitMul();}
+
+function recalc(){
+  var k=KSIC[sel.value];
+  var dr=[],ic=[];
+  for(var y=0;y<3;y++){
+    var d=val("debt",y),c=val("cap",y),op=val("op",y),it=val("int",y);
+    var r=(d!==null&&c!==null&&c>0)?d/c*100:(c!==null&&c<=0?Infinity:null);
+    dr.push(r);
+    var v=null;
+    if(op!==null){
+      if(it!==null&&it>0)v=op/it;
+      else if(op<0)v=-0.0001;      /* 금융비용 없어도 영업손실이면 1.0 미만 간주 */
+      else if(it!==null&&it===0)v=Infinity;
+    }
+    ic.push(v);
+    var e1=document.getElementById("d_dr"+y),e2=document.getElementById("d_ic"+y);
+    if(r===null){e1.textContent="—";e1.className="";}
+    else if(!isFinite(r)){e1.textContent="자본잠식";e1.className="bad";}
+    else{e1.textContent=fmt(r)+"%";e1.className=(y===0&&r>k.lim)?"bad":(y===0?"good":"");}
+    if(v===null){e2.textContent="—";e2.className="";}
+    else if(!isFinite(v)){e2.textContent="이자비용 없음";e2.className="good";}
+    else if(v<0){e2.textContent="영업손실";e2.className="bad";}
+    else{e2.textContent=fmt(v,2)+"배";e2.className=v<1?"bad":"good";}
+  }
+  autoFlags(dr,ic);
+  return {dr:dr,ic:ic};
+}
+
+function setAuto(id,on,why){
+  var el=document.getElementById(id);
+  if(!el)return;
+  el.checked=on;
+  var lab=el.closest(".chk");
+  if(lab){
+    lab.classList.toggle("auto",on);
+    var w=lab.querySelector(".autowhy");
+    if(w)w.remove();
+    if(on&&why){
+      var s=document.createElement("em");
+      s.className="autowhy";s.style.color="var(--warn)";s.textContent="자동 판정 · "+why;
+      lab.querySelector("span").appendChild(s);
+    }
+  }
+}
+
+function autoFlags(dr,ic){
+  /* ① 우량기업 — 자본총계 200억(20,000백만) 또는 자산총계 700억(70,000백만) 초과 */
+  var cap0=val("cap",0),as0=val("asset",0);
+  var rich=(cap0!==null&&cap0>20000)||(as0!==null&&as0>70000);
+  if(cap0!==null||as0!==null){
+    setAuto("L1",rich, rich?("자본총계 "+fmt(cap0,0)+"백만원 / 자산총계 "+fmt(as0,0)+"백만원"):null);
+  }
+  /* ⑪ 2년 연속 적자 + 자본전액잠식 */
+  var p=[0,1].map(function(y){var n=val("net",y);return n===null?val("op",y):n;});
+  var loss2=p[0]!==null&&p[1]!==null&&p[0]<0&&p[1]<0;
+  var wiped=cap0!==null&&cap0<=0;
+  if(p[0]!==null&&p[1]!==null&&cap0!==null){
+    setAuto("L11a",loss2&&wiped, (loss2&&wiped)?"2년 연속 적자 + 자본총계 0 이하":null);
+  }
+  /* ⑪ 3년 연속 이자보상배율 1.0 미만 */
+  var have=ic.filter(function(v){return v!==null}).length===3;
+  var under=have&&ic.every(function(v){return v<1});
+  if(have)setAuto("L11b",under, under?"3개년 모두 1.0 미만":null);
+}
+
+document.addEventListener("input",function(e){
+  if(e.target.matches('table.fin input')||e.target.id==="unit")recalc();
+});
+document.getElementById("unit").addEventListener("change",recalc);
+
+/* ── 표 채우기 (붙여넣기·PDF 공용) ── */
+function aliasRe(a){
+  var e=a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  return new RegExp("(^|[^가-힣A-Za-z])"+e+"(?![가-힣])");
+}
+function toNums(list){
+  return list.map(function(s){
+    var neg=/^\(/.test(s)||/[-△▲]/.test(s);
+    var v=parseFloat(s.replace(/[(),△▲\-\s]/g,""));
+    return isNaN(v)?null:(neg?-v:v);
+  }).filter(function(v){return v!==null});
+}
+var NUMRE=/\(?[-△▲]?\d[\d,]*\.?\d*\)?/g;
+function looksLikeYear(s){return /^\d{4}$/.test(s)&&+s>=1990&&+s<=2100;}
+
+/* 단위 표기 → 백만원 환산계수 */
+var UNITF={"원":0.000001,"천원":0.001,"백만원":1,"억원":100};
+var UNITV={"원":"0.000001","천원":"0.001","백만원":"1","억원":"100"};
+var UNITRANK={"원":4,"천원":3,"백만원":2,"억원":1};
+function unitOf(line){
+  var m=/단위\s*[:：]?\s*\(?\s*(억원|백만원|천원|원|%)\s*\)?/.exec(line);
+  return m?m[1]:null;
+}
+function detectOrder(txt){
+  var m=txt.match(/\d{4}-\d{2}-\d{2}/g);
+  if(m&&m.length>=2){
+    for(var i=0;i<m.length-1;i++){
+      if(m[i].slice(0,4)!==m[i+1].slice(0,4)) return m[i]<m[i+1]?"asc":"desc";
+    }
+  }
+  return null;
+}
+
+/* 문서 전체를 훑어 후보를 모은다 — 줄마다 그 줄이 속한 표의 단위를 기억 */
+function collect(txt){
+  var lines=txt.split(/\r?\n/), cur=null, cand={};
+  lines.forEach(function(line,idx){
+    var L=line.replace(/[ \t]+/g," ").trim();
+    if(!L)return;
+    var u=unitOf(L); if(u)cur=u;
+    if(cur==="%")return;                 /* 비율표는 금액이 아니므로 제외 */
+    ROWS.forEach(function(r){
+      var at=-1,alen=0;
+      r.alias.some(function(a){
+        var m=aliasRe(a).exec(L);
+        if(m&&m.index<=8){at=m.index+m[1].length;alen=a.length;return true;}
+        return false;
+      });
+      if(at<0)return;
+      var raw=(L.slice(at+alen).match(NUMRE)||[]).filter(function(s){return !looksLikeYear(s)});
+      var nums=toNums(raw);
+      if(!nums.length)return;
+      (cand[r.k]=cand[r.k]||[]).push({nums:nums,unit:cur,idx:idx});
+    });
+  });
+  return cand;
+}
+
+/* 3개년이 다 있고 단위가 세밀한 후보(=상세표)를 우선 */
+function pick(list){
+  if(!list||!list.length)return null;
+  var best=null;
+  list.forEach(function(c){
+    var score=(c.nums.length>=3?100:c.nums.length*10)+(UNITRANK[c.unit]||0);
+    if(!best||score>best.score||(score===best.score&&c.idx<best.c.idx))
+      best={score:score,c:c};
+  });
+  return best.c;
+}
+
+/* ── 기업 기본정보 자동 인식 (크레탑·나이스 리포트) ── */
+var GRADE=["D","C","CC","CCC-","CCC","CCC+","B-","B","B+","BB-","BB","BB+",
+           "BBB-","BBB","BBB+","A-","A","A+","AA-","AA","AA+","AAA"];
+function profileFrom(txt){
+  var t=txt.replace(/[ \t]+/g," "), done=[];
+
+  /* 업종 — 표준산업분류 코드 */
+  var mk=/표준산업분류[^\n]*?\(\s*([A-Z])\s*(\d{2})\d*\s*\)/.exec(t)
+       ||/\(\s*([A-Z])\s*(\d{4,5})\s*\)/.exec(t);
+  if(mk){
+    var pre=mk[1]+String(mk[2]).slice(0,2), hit=-1;
+    for(var i=0;i<KSIC.length;i++) if(KSIC[i].c===pre) hit=i;
+    if(hit<0) for(var j=0;j<KSIC.length;j++) if(KSIC[j].c===mk[1]) hit=j;
+    if(hit>=0){ sel.selectedIndex=hit; ksicNote(); ksicTouched=true;
+      done.push("업종 "+(KSIC[hit].c+" "+KSIC[hit].n)); }
+  }
+
+  /* 업력 — 최초 개업일 우선, 없으면 설립년월 */
+  var dt=null,src="";
+  var mo=/(\d{4})-(\d{2})-(\d{2})[^\n]{0,60}개업/.exec(t);
+  if(mo){dt=new Date(+mo[1],+mo[2]-1,+mo[3]);src="최초 개업일 "+mo[1]+"-"+mo[2];}
+  else{
+    var ms=/설립년월\s*(\d{4})-(\d{2})(?:-(\d{2}))?/.exec(t);
+    if(ms){dt=new Date(+ms[1],+ms[2]-1,+(ms[3]||1));src="설립년월 "+ms[1]+"-"+ms[2];}
+  }
+  if(dt&&!isNaN(dt)){
+    var yrs=Math.round((Date.now()-dt.getTime())/31557600000*10)/10;
+    if(yrs>0&&yrs<120){document.getElementById("age").value=yrs;
+      done.push("업력 "+yrs+"년 ("+src+")");}
+  }
+
+  /* 상시근로자 */
+  var me=/종업원수\s*([\d,]+)\s*명/.exec(t);
+  if(me){document.getElementById("emp").value=me[1].replace(/,/g,"");
+    done.push("상시근로자 "+me[1]+"명");}
+
+  /* 소재지 — 수도권 여부 */
+  var ma=/주소\s*\(?\d{5}\)?\s*([^\n]{2,30})/.exec(t);
+  if(ma){
+    var metro=/서울|인천|경기/.test(ma[1]);
+    document.getElementById("region").value=metro?"metro":"local";
+    done.push(metro?"수도권 소재":"지방 소재 (한도 70억 우대)");
+  }
+
+  /* 기업인증 — 벤처·이노비즈 */
+  var mc=/벤처\s*이노비즈\s*메인비즈[^\n]*\n\s*(\S+)\s+(\S+)/.exec(t);
+  if(mc){
+    var innoY=(mc[1].indexOf("미")<0)||(mc[2].indexOf("미")<0);
+    var el=document.getElementById("O_inno");
+    if(el){el.checked=innoY; if(innoY)done.push("벤처 또는 이노비즈 보유");}
+  }
+
+  /* 산업재산권 — 특허 보유 시 개발기술사업화 대상 */
+  var mp=/특허\s*실용신안\s*디자인\s*상표권\s*\n\s*(\d+)\s*건/.exec(t)
+       ||/특허\s*(\d+)\s*건/.exec(t);
+  if(mp&&+mp[1]>0){
+    var et=document.getElementById("O_tech");
+    if(et){et.checked=true; done.push("특허 "+mp[1]+"건 → 보유 기술 사업화");}
+  }
+
+  /* 기업신용등급 — BBB 이상이면 융자제한 ①항 */
+  var mg=/기업신용등급[\s\S]{0,160}?(?:^|\n|\s)(AAA|AA[+-]?|A[+-]?|BBB[+-]?|BB[+-]?|B[+-]?|CCC[+-]?|CC|C|D)(?=\s|$|\n)/.exec(t);
+  if(mg){
+    var gi=GRADE.indexOf(mg[1]);
+    if(gi>=0){
+      var high=gi>=GRADE.indexOf("BBB-");
+      var e1=document.getElementById("L1");
+      if(e1&&high){setAuto("L1",true,"신용등급 "+mg[1]+" (BBB 이상)");}
+      done.push("신용등급 "+mg[1]+(high?" — 우량기업(①항) 해당":" — ①항 비해당"));
+    }
+  }
+  return done;
+}
+
+/* 글자가 한 칸씩 흩어진 텍스트인지 판단 */
+function isGlyphSpaced(txt){
+  var lines=txt.split(/\r?\n/).filter(function(l){return l.trim().length>8;}).slice(0,40);
+  if(!lines.length)return false;
+  var bad=0;
+  lines.forEach(function(l){
+    var t=l.trim().split(/\s+/);
+    if(t.length<5)return;
+    var one=t.filter(function(x){return x.length===1;}).length;
+    if(one/t.length>0.6)bad++;
+  });
+  return bad>=Math.max(2,lines.length*0.3);
+}
+
+function fillFrom(txt){
+  var det=detectOrder(txt);
+  if(det)document.getElementById("order").value=det;
+  var asc=document.getElementById("order").value==="asc";
+
+  var cand=collect(txt), chosen={}, units=[];
+  ROWS.forEach(function(r){
+    var c=pick(cand[r.k]);
+    if(c){chosen[r.k]=c; if(c.unit)units.push(c.unit);}
+  });
+
+  var target=null,tally={};
+  units.forEach(function(u){tally[u]=(tally[u]||0)+1;});
+  Object.keys(tally).forEach(function(u){
+    if(!target||tally[u]>tally[target]||
+       (tally[u]===tally[target]&&UNITRANK[u]>UNITRANK[target])) target=u;
+  });
+  if(target)document.getElementById("unit").value=UNITV[target];
+  var tf=target?UNITF[target]:null;
+
+  var hits=0,missed=[],got=[];
+  ROWS.forEach(function(r){
+    var c=chosen[r.k];
+    if(c){
+      hits++;
+      var arr=c.nums.slice(0,3);
+      if(tf&&c.unit&&c.unit!==target){
+        var kk=UNITF[c.unit]/tf;
+        arr=arr.map(function(v){return Math.round(v*kk*100)/100;});
+      }
+      if(asc)arr=arr.slice().reverse();   /* 표는 항상 최근연도가 왼쪽 */
+      got.push(r.n+" "+arr[0].toLocaleString("ko-KR"));
+      for(var y=0;y<3;y++){
+        var el=document.querySelector('input[data-k="'+r.k+'"][data-y="'+y+'"]');
+        if(arr[y]!==undefined)el.value=arr[y].toLocaleString("ko-KR");
+      }
+    } else if(!r.opt) missed.push(r.n);
+  });
+  recalc();
+  return {hits:hits,missed:missed,unit:target,got:got,spaced:isGlyphSpaced(txt),
+          order:asc?"왼쪽이 과거연도":"왼쪽이 최근연도"};
+}
+
+document.getElementById("pasteToggle").addEventListener("click",function(){
+  var b=document.getElementById("pasteBox");
+  b.hidden=!b.hidden;
+  this.classList.toggle("on",!b.hidden);
+  if(!b.hidden)document.getElementById("raw").focus();
+});
+document.getElementById("parse").addEventListener("click",function(){
+  var src=document.getElementById("raw").value;
+  var r=fillFrom(src);
+  var prof=profileFrom(src);
+  var msg=r.hits+"개 항목을 채웠습니다.";
+  if(prof.length)msg+=" 기업정보: "+prof.join(" · ")+".";
+  if(r.unit)msg+=" 단위 "+r.unit+" · 원본 "+r.order+" 로 인식.";
+  if(r.missed.length)msg+=" 못 찾음: "+r.missed.join(", ");
+  document.getElementById("parseMsg").textContent=msg;
+  diagnose();
+});
+
+/* ── PDF 읽기 ── */
+var drop=document.getElementById("drop"),pdfInput=document.getElementById("pdfFile"),
+    pdfMsg=document.getElementById("pdfMsg");
+function say(cls,html){pdfMsg.hidden=false;pdfMsg.className="pdfmsg "+cls;pdfMsg.innerHTML=html;}
+
+drop.addEventListener("click",function(){pdfInput.click();});
+drop.addEventListener("keydown",function(e){
+  if(e.key==="Enter"||e.key===" "){e.preventDefault();pdfInput.click();}
+});
+["dragenter","dragover"].forEach(function(ev){
+  drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.add("hot");});
+});
+["dragleave","drop"].forEach(function(ev){
+  drop.addEventListener(ev,function(e){e.preventDefault();drop.classList.remove("hot");});
+});
+drop.addEventListener("drop",function(e){
+  var f=e.dataTransfer&&e.dataTransfer.files&&e.dataTransfer.files[0];
+  if(f)readPdf(f);
+});
+pdfInput.addEventListener("change",function(){
+  if(this.files&&this.files[0])readPdf(this.files[0]);
+});
+
+function pageLines(items){
+  var rows={};
+  items.forEach(function(it){
+    if(!it.str||!it.str.trim())return;
+    var y=Math.round(it.transform[5]/2)*2;
+    (rows[y]=rows[y]||[]).push({
+      x:it.transform[4],
+      w:it.width||0,
+      h:it.height||Math.abs(it.transform[3])||10,
+      s:it.str
+    });
+  });
+  return Object.keys(rows).sort(function(a,b){return b-a;}).map(function(y){
+    var seq=rows[y].sort(function(a,b){return a.x-b.x;});
+    var out="",prev=null;
+    seq.forEach(function(o){
+      if(prev){
+        var gap=o.x-(prev.x+prev.w);
+        /* 글자 조각이 붙어 있으면 그대로 잇고, 칸이 벌어졌을 때만 띄운다 */
+        if(gap>(prev.h||10)*0.18) out+=" ";
+      }
+      out+=o.s;
+      prev=o;
+    });
+    return out.replace(/[ \t]{2,}/g," ").trim();
+  }).filter(function(l){return l.length>0});
+}
+
+function readPdf(file){
+  if(!/\.pdf$/i.test(file.name)&&file.type!=="application/pdf"){
+    say("err","<b>PDF 파일만 읽을 수 있습니다.</b> 엑셀이나 이미지라면 아래 붙여넣기 칸을 쓰거나 표에 직접 입력하세요.");
+    return;
+  }
+  if(typeof pdfjsLib==="undefined"){
+    say("err","<b>PDF 읽기 기능을 불러오지 못했습니다.</b> 인터넷 연결을 확인하고 새로고침하거나, 붙여넣기 칸을 이용하세요.");
+    return;
+  }
+  try{
+    pdfjsLib.GlobalWorkerOptions.workerSrc=
+      "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+  }catch(e){}
+
+  drop.classList.add("busy");
+  say("warn","<b>"+esc(file.name)+"</b> 읽는 중입니다…");
+
+  var fr=new FileReader();
+  fr.onerror=function(){
+    drop.classList.remove("busy");
+    say("err","<b>파일을 열지 못했습니다.</b> 다른 파일로 시도하거나 붙여넣기 칸을 이용하세요.");
+  };
+  fr.onload=function(){
+    pdfjsLib.getDocument({data:new Uint8Array(fr.result)}).promise.then(function(pdf){
+      var jobs=[];
+      for(var i=1;i<=pdf.numPages;i++){
+        jobs.push(pdf.getPage(i).then(function(pg){
+          return pg.getTextContent().then(function(tc){return pageLines(tc.items).join("\n");});
+        }));
+      }
+      return Promise.all(jobs).then(function(pages){
+        return {text:pages.join("\n"),n:pdf.numPages};
+      });
+    }).then(function(res){
+      drop.classList.remove("busy");
+      var text=res.text;
+      if(text.replace(/\s/g,"").length<40){
+        say("err","<b>글자를 찾지 못했습니다.</b> 스캔하거나 사진으로 만든 PDF는 글자가 아니라 그림이라 이 방식으로는 읽을 수 없습니다. "+
+          "크레탑에서 표를 드래그해 복사한 뒤 아래 붙여넣기 칸에 넣거나, 표에 직접 입력하세요.");
+        return;
+      }
+      var raw=document.getElementById("raw");
+      raw.value=text;
+      document.getElementById("pasteBox").hidden=false;
+      document.getElementById("pasteToggle").classList.add("on");
+      var r=fillFrom(text);
+      if(r.hits===0){
+        say("warn","<b>"+res.n+"쪽을 읽었지만 재무 항목을 찾지 못했습니다.</b>"+
+          (r.spaced
+            ? " 이 PDF는 글자를 한 자씩 따로 저장해둔 형식이라 &lsquo;매출액&rsquo;이 &lsquo;매 출 액&rsquo;으로 읽힙니다."+
+              " 숫자까지 쪼개져서 자동 복구가 어렵습니다. 아래 표에 7개 항목만 직접 입력하시는 편이 빠릅니다."
+            : " 읽어낸 글자를 아래 붙여넣기 칸에 담아뒀습니다. 매출액·자산 같은 줄이 어떻게 생겼는지 확인해보세요."));
+        document.getElementById("raw").scrollIntoView({behavior:"smooth",block:"center"});
+      } else {
+        var prof=profileFrom(text);
+        var head="<b>"+res.n+"쪽에서 "+r.hits+"개 항목을 채웠습니다.</b> "+
+          "단위 <b>"+(r.unit||"확인 필요")+"</b> · 원본 "+r.order+" 로 인식했습니다.";
+        var list="<div style='margin-top:7px;font-size:12.3px;color:var(--muted)'>최근 결산연도 기준 — "+
+          esc(r.got.join(" · "))+"</div>";
+        var tail=r.missed.length
+          ? "<div style='margin-top:6px'>못 찾은 항목: <b>"+esc(r.missed.join(", "))+"</b> — 표에서 직접 입력하세요.</div>"
+          : "<div style='margin-top:6px'>표의 숫자가 원본과 맞는지 한 번만 확인해주세요.</div>";
+        var pline=prof.length
+          ? "<div style='margin-top:7px;padding-top:7px;border-top:1px solid var(--rule)'>"+
+            "<b>기업정보도 함께 채웠습니다</b> — "+esc(prof.join(" · "))+"</div>"
+          : "";
+        say(r.missed.length?"warn":"ok", head+list+tail+pline);
+        diagnose();
+      }
+    }).catch(function(err){
+      drop.classList.remove("busy");
+      say("err","<b>PDF를 읽지 못했습니다.</b> 암호가 걸렸거나 형식이 특이한 파일일 수 있습니다. "+
+        "붙여넣기 칸을 이용하거나 표에 직접 입력하세요.");
+    });
+  };
+  fr.readAsArrayBuffer(file);
+}
+
+document.getElementById("demo").addEventListener("click",function(){
+  document.getElementById("raw").value=
+    "재무상태표 단위 :천원\n계정명 2023-12-31 2024-12-31 2025-12-31\n"+
+    "자산(*) 10,369,449 10,502,567 11,427,553\n"+
+    "유형자산(*) 6,322,537 6,657,821 6,834,498\n"+
+    "부채(*) 7,247,329 7,172,368 7,884,232\n"+
+    "자본(*) 3,122,120 3,330,199 3,543,321\n"+
+    "손익계산서 단위 :천원\n계정명 2023-12-31 2024-12-31 2025-12-31\n"+
+    "매출액(*) 6,258,033 6,281,266 5,588,906\n"+
+    "영업이익(손실) 387,106 391,190 457,748\n"+
+    "이자비용 208,072 227,701 266,238\n"+
+    "당기순이익(순손실) 160,830 208,079 213,122";
+  document.getElementById("pasteBox").hidden=false;
+  document.getElementById("pasteToggle").classList.add("on");
+  document.getElementById("parse").click();
+  document.getElementById("age").value="25";
+  document.getElementById("emp").value="21";
+  sel.selectedIndex=18; ksicNote(); recalc();
+});
+
+/* ── 체크박스 ── */
+function boxes(arr,host){
+  document.getElementById(host).innerHTML=arr.map(function(x){
+    return '<label class="chk"><input type="checkbox" id="'+x.id+'"><span>'+x.t+
+      (x.ref?' <em style="display:inline;color:var(--seal);font-weight:700">'+x.ref+'</em>':'')+
+      (x.auto?'<span class="auto-badge">자동</span>':'')+
+      (x.d?'<em>'+x.d+'</em>':'')+'</span></label>';
+  }).join("");
+}
+boxes(LIMITS,"limits");boxes(OPTS,"opts");
+
+/* ── 자금 ── */
+function fundList(v){
+  var out=[],age=v.age,unk=(age===null),D="정책자금 기준금리(분기별 변동)";
+  var IF=unk?"업력 확인 필요 · ":"";
+  if(v.O_coop)out.push({n:"혁신성장지원자금 (협동화자금)",tag:"업력 제한 없음",max:100,ann:100,work:15,workSolo:true,
+    limit:"연간 100억원 이내 (운전자금 15억원 이내)",
+    term:"시설 10년 이내 (거치 5년) · 운전 5년 이내 (거치 2년)",rate:D,
+    note:"3개 이상 기업의 협동화실천계획 또는 2개 이상 기업의 협업사업계획 승인이 필요합니다. 부채비율 초과(⑩)와 소상공인(⑨) 제한이 적용되지 않습니다.",p:"공고 p23 부근"});
+  if(v.O_young&&(unk||age<3))out.push({n:"창업기반지원자금 (청년전용창업자금)",
+    tag:IF+"만 39세 이하 · 업력 3년 미만",max:(v.O_mfg||v.O_focus)?2:1,ann:(v.O_mfg||v.O_focus)?2:1,work:(v.O_mfg||v.O_focus)?2:1,workSolo:true,maybe:unk,
+    limit:"기업당 최대 1억원 (제조업 및 중점지원분야는 2억원)",
+    term:"시설 10년 이내 (거치 담보 4년·신용 3년) · 운전 6년 이내 (거치 3년)",rate:"2.5% 고정금리",
+    note:"직접대출만 가능합니다. 접수 후 사업계획서 심의위원회 평가를 거쳐 지원 여부가 결정됩니다. 청년창업사관학교 참여기업 등은 업력 7년까지 가능합니다.",p:"공고 p18 부근"});
+  if(unk||age<7)out.push({n:"창업기반지원자금 (일반)",tag:IF+"업력 7년 미만",max:60,ann:60,work:5,workSolo:true,maybe:unk,
+    limit:"연간 60억원 이내 (운전자금 연간 5억원 이내)",
+    term:"시설 10년 이내 (거치 담보 4년·신용 3년) · 운전 5년 이내 (거치 2년)",rate:D+" − 0.3%p",
+    note:"신산업 창업 분야(참고1-1)는 업력 10년까지 가능합니다. 업력 7년 미만이면 부채비율 제한(⑩)이 적용되지 않습니다.",p:"공고 p17 부근"});
+  if(v.O_tech){var big=v.O_focus;
+    out.push({n:"개발기술사업화자금",tag:"보유 기술 사업화",max:big?60:30,ann:big?60:30,work:big?10:5,workSolo:true,
+    limit:big?"연간 60억원 이내 (운전자금 연간 10억원 이내)":"연간 30억원 이내 (운전자금 연간 5억원 이내)",
+    term:"시설 10년 이내 (거치 담보 4년·신용 3년) · 운전 5년 이내 (거치 2년)",rate:D,
+    note:(big?"혁신성장분야 영위 기업으로 한도가 상향 적용됩니다. ":"혁신성장분야를 영위하면 한도가 60억원으로 올라갑니다. ")+"제품 양산 후 3년이 지난 기술은 제외됩니다(초격차 분야는 5년).",p:"공고 p19 부근"});}
+  if(unk||age>=7)out.push({n:"혁신성장지원자금 (일반)",tag:IF+"업력 7년 이상",max:60,ann:60,work:5,workSolo:false,maybe:unk,
+    limit:"연간 60억원 이내 (운전자금 연간 5억원 이내)",
+    term:"시설 10년 이내 (거치 담보 4년·신용 3년) · 운전 5년 이내 (거치 2년)",
+    rate:D+" + 0.5%p"+(v.O_ax?" 에서 AX 우대 0.1%p 인하":""),
+    note:"운전자금은 원칙적으로 시설자금을 함께 받은 기업의 초기가동비만 지원됩니다(시설자금의 50% 이내). 지식서비스산업(참고6)과 사회적경제기업은 운전자금 단독 지원이 가능합니다.",p:"공고 p22 부근"});
+  if(v.O_export)out.push({n:"신시장진출지원자금 (내수기업 수출기업화)",tag:"수출실적 10만불 미만",max:null,
+    limit:"공고 본문에서 확인 필요",term:"공고 본문에서 확인 필요",rate:D+" 기준 가감",
+    note:"소상공인도 신청할 수 있는 유일한 자금입니다(융자제한 ⑨항 전체 예외). 수출을 준비하는 내수기업이 대상입니다.",p:"공고 p20 부근",soft:true});
+  return out;
+}
+
+/* ── 진단 ── */
+document.getElementById("clr").addEventListener("click",function(){
+  ["age","emp","raw"].forEach(function(i){document.getElementById(i).value="";});
+  document.querySelectorAll('table.fin input').forEach(function(c){c.value="";});
+  document.querySelectorAll('.chk input').forEach(function(c){c.checked=false;});
+  document.querySelectorAll('.chk').forEach(function(l){l.classList.remove("auto");});
+  document.querySelectorAll('.autowhy').forEach(function(e){e.remove();});
+  document.getElementById("parseMsg").textContent="";
+  sel.selectedIndex=3;ksicNote();recalc();
+  document.getElementById("result").innerHTML="";
+});
+
+function diagnose(){
+  var k=KSIC[sel.value],age=num("age"),emp=num("emp");
+  var unk=(age===null);
+  var R=document.getElementById("result");
+  var F=recalc();
+
+  var v={age:age};OPTS.forEach(function(o){v[o.id]=chk(o.id);});
+  var stops=[];
+  LIMITS.forEach(function(l){
+    if(!chk(l.id))return;
+    if((l.id==="L11a"||l.id==="L11b")&&!unk&&age<=5)return;
+    stops.push({t:l.t,ref:"공고 Ⅲ. 유의사항 "+l.ref+"항 (p10)"});
+  });
+
+  if(emp!==null){
+    var heavy=/^(B|C|F|H)/.test(k.c),floorN=heavy?10:5;
+    if(emp<floorN&&!v.O_mfg&&!v.O_focus&&!v.O_coop&&!v.O_export){
+      stops.push({t:"소상공인에 해당합니다 (상시근로자 "+emp+"명, 이 업종 기준 "+floorN+"명 미만)",
+        ref:"공고 Ⅲ. 유의사항 ⑨항 (p10) · 소상공인기본법 시행령"});
+    }
+  }
+
+  var ratio=F.dr[0],overDebt=false;
+  if(ratio!==null&&!isFinite(ratio)){
+    if((unk||age>5)&&!chk("L11a"))stops.push({t:"자본총계가 0 이하입니다 (자본잠식)",ref:"공고 Ⅲ. 유의사항 ⑪항 (p10)"});
+  } else if(ratio!==null&&ratio>k.lim&&!unk&&age>=7&&!v.O_coop){
+    overDebt=true;
+    stops.push({t:"업종별 융자제한 부채비율 초과 ("+fmt(ratio)+"% / 제한 "+k.lim.toFixed(1)+"%)",
+      ref:"공고 Ⅲ. 유의사항 ⑩항 (p10) · 별표5 (p46)"});
+  }
+
+  var funds=fundList(v),html="";
+
+  if(stops.length){
+    html+='<div class="verdict stop"><h3>지금은 신청할 수 없습니다</h3>'+
+      '<p>아래 '+stops.length+'개 항목이 융자제한기업에 해당합니다. 하나라도 걸리면 자금 종류와 무관하게 신청이 막힙니다.</p>'+
+      '<ol class="why">'+stops.map(function(s){
+        return '<li><b>'+esc(s.t)+'</b><br><code>'+esc(s.ref)+'</code></li>';}).join("")+'</ol></div>';
+  } else {
+    var caps=funds.map(function(f){return f.max;}).filter(function(m){return m;});
+    var top=caps.length?Math.min(Math.max.apply(null,caps),v.O_coop?100:(v.O_ax?100:60)):null;
+    html+='<div class="verdict pass"><h3>'+
+      (top?('연간 최대 '+top+'억원 이내 신청 가능'):'신청 자격이 확인됩니다')+'</h3>'+
+      (top?'<div class="amt">'+funds.length+'개 자금 신청 가능'+
+           (unk?' · 업력을 넣으면 하나로 좁혀집니다':'')+'</div>':'')+
+      '<p>융자제한기업 항목에 걸리는 것이 없습니다. '+
+      (unk?'업력을 입력하지 않아 창업기(7년 미만)와 성장기(7년 이상) 자금을 모두 보여드립니다. ':'')+
+      '실제 지원 여부는 현장평가와 관할 지역본부 예산에 따라 결정됩니다.</p></div>';
+  }
+
+  if(ratio!==null&&isFinite(ratio)){
+    var scale=Math.max(k.lim*1.25,ratio*1.1);
+    var pw=Math.min(100,ratio/scale*100),lw=k.lim/scale*100;
+    var exempt=(!unk&&age<7)||v.O_coop;
+    var rnd=val("rnd",0),sales=val("sales",0);
+    var rndPct=(rnd!==null&&sales!==null&&sales>0)?rnd/sales*100:null;
+    html+='<div class="gauge"><div class="gtop"><b>부채비율 '+fmt(ratio)+'%</b>'+
+      '<span>'+esc(k.c==="ETC"?k.n:k.c+" "+k.n)+' · 업종 평균 '+k.avg.toFixed(1)+'%</span></div>'+
+      '<div class="bar"><i class="'+(overDebt?"over":"")+'" style="width:'+pw+'%"></i>'+
+      '<u style="left:'+lw+'%"></u></div>'+
+      '<div class="glabels"><span>0%</span><span>제한선 '+k.lim.toFixed(1)+'%</span></div>'+
+      '<p style="margin:11px 0 0;font-size:12.8px;color:var(--muted);line-height:1.7">'+
+      (unk&&!v.O_coop&&ratio>k.lim
+        ?'제한선을 넘습니다. 다만 업력 7년 미만이면 이 제한(⑩항)이 적용되지 않으므로, 업력을 입력하면 정확히 판정됩니다.'
+      :exempt?(v.O_coop?'협동화자금은 부채비율 제한이 적용되지 않습니다.'
+                       :'업력 7년 미만이므로 부채비율 제한(⑩항)이 적용되지 않습니다.')
+             :(overDebt?'제한선을 초과했습니다. 사업전환을 하는 경우 제한선은 '+k.cv.toFixed(1)+'%까지 완화됩니다.'
+                       :'제한선 이내입니다. 사업전환을 하는 경우 '+k.cv.toFixed(1)+'%까지 허용됩니다.'))+
+      (rndPct!==null?('<br>연구개발비 비율 '+fmt(rndPct,2)+'%'+
+        (rndPct>=1.5?' — 1.5% 이상이므로 R&amp;D 투자금액은 부채비율 산정에서 제외됩니다. 실제 판정 비율은 이보다 낮아집니다.'
+                    :' — 1.5%에 미달해 R&amp;D 제외 규정은 적용되지 않습니다.')):'')+
+      '</p></div>';
+  }
+
+  var w=EXWARN[k.ex];
+  if(w&&!stops.length){
+    html+='<div class="bonus"><b>업종을 한 번 더 확인하세요.</b> '+esc(w.t)+' '+esc(w.d)+
+      '<br><span style="color:var(--muted);font-size:12.3px">근거 · 별표1 정책자금 융자제외 대상 업종 (공고 p40)</span></div>';
+  }
+
+  if(!stops.length){
+    if(!funds.length){
+      html+='<div class="bonus">입력하신 조건에 맞는 자금이 좁습니다. 4단계 항목 중 해당하는 것을 더 선택해보세요.</div>';
+    } else {
+      /* ── 예상 대출액 산정 ── */
+      var exbal=num("exbal")||0, capex=num("capex");
+      var metro=document.getElementById("region").value==="metro";
+      var maxBal=(v.O_coop||v.O_ax||v.O_focus||v.O_inno)?100:(metro?60:70);
+      var remain=Math.max(0,maxBal-exbal);
+
+      /* 별표3 운전자금 우대(10억) — 매출 증가 요건은 재무제표로 자동 판정 */
+      var s0=val("sales",0),s2=val("sales",2),bonus=null;
+      if(s0!==null&&s2!==null&&s2>0){
+        var cagr=Math.pow(s0/s2,1/2)-1;
+        if(s0>=3000&&cagr>=0.20) bonus="매출 증가 기업 (최근 결산 "+fmt(s0/100,1)+"억원, 3년 연평균 "+fmt(cagr*100,1)+"% 증가)";
+      }
+
+      html+='<h2 class="step" style="margin-top:28px"><span>결과</span>예상 대출 가능액</h2>';
+      html+='<div class="est"><div class="erow"><span>최대 대출한도(잔액)</span><b>'+maxBal+'억원</b></div>'+
+        '<div class="erow"><span>기존 잔액 차감 후 여력</span><b>'+fmt(remain,1)+'억원</b></div>'+
+        '<div class="esrc">근거 · 별표2 최대 대출한도(잔액) 우대기준 (p42)'+
+        (metro?'':' — 지방소재기업 70억원 적용')+
+        ((v.O_coop||v.O_ax||v.O_focus||v.O_inno)?' · 정책 우대 100억원 적용':'')+'</div>';
+
+      if(capex===null){
+        html+='<div class="ehint">위 <b>계획 중인 시설투자액</b>을 넣으면 시설·운전으로 나눈 예상액이 계산됩니다. '+
+          '비워두면 운전자금 단독 가능 여부만 표시합니다.</div>';
+      }
+      var usable=funds.filter(function(f){return f.ann;});
+      function calc(f,c){
+        var wlim=f.work; if(bonus&&f.work===5)wlim=10;
+        var fac=(c===null)?null:Math.min(c,f.ann,remain);
+        var wk;
+        if(f.workSolo) wk=Math.min(wlim,Math.max(0,remain-(fac||0)),f.ann);
+        else wk=(fac===null)?0:Math.min(fac*0.5,wlim,Math.max(0,remain-fac));
+        return {fac:fac,wk:wk,tot:(fac||0)+wk,wlim:wlim};
+      }
+
+      html+='<table class="etab"><thead><tr><th>자금</th><th>시설자금</th><th>운전자금</th><th>합계</th></tr></thead><tbody>'+
+        usable.map(function(f){
+          var c=calc(f,capex);
+          return '<tr><td>'+esc(f.n.replace(/\s*\(.*\)/,""))+'</td>'+
+            '<td>'+(c.fac===null?'—':fmt(c.fac,1)+'억')+'</td>'+
+            '<td>'+((!f.workSolo&&c.wk===0)?'<span style="color:var(--muted);font-size:12px">시설자금 필요</span>'
+                     :fmt(c.wk,1)+'억'+(c.wlim===10?' <em>우대</em>':''))+'</td>'+
+            '<td><b>'+fmt(c.tot,1)+'억</b></td></tr>';
+        }).join("")+'</tbody></table>';
+
+      /* ── 쉬운 말 요약: 설비 구입 계획별로 얼마인지 ── */
+      function bestAt(c){
+        var b=null;
+        usable.forEach(function(f){
+          var r=calc(f,c);
+          if(!b||r.tot>b.tot)b={tot:r.tot,fac:r.fac||0,wk:r.wk,n:f.n};
+        });
+        return b;
+      }
+      var steps=[0,2,5,10];
+      if(capex!==null&&steps.indexOf(capex)<0)steps.push(capex);
+      steps=steps.filter(function(c){return c<=remain;}).sort(function(a,b){return a-b;});
+      var zero=bestAt(0);
+
+      html+='<div class="plain"><h4>쉽게 말하면 이렇습니다</h4>'+
+        '<p class="lead">'+
+        (zero&&zero.tot>0
+          ? '기계나 설비를 안 사도 <b>운전자금 '+fmt(zero.wk,1)+'억원</b>까지는 받을 수 있습니다. '+
+            '설비를 사면 그만큼 더 늘어납니다.'
+          : '지금 상태로는 <b>받을 수 있는 돈이 없습니다.</b> '+
+            '기계나 설비를 사는 계획이 있어야 대출이 나옵니다.')+
+        '</p>'+
+        '<table class="etab"><thead><tr><th>기계·설비 구입 계획</th><th>설비 사는 돈</th>'+
+        '<th>운영에 쓰는 돈</th><th>받을 수 있는 총액</th></tr></thead><tbody>'+
+        steps.map(function(c){
+          var b=bestAt(c), hi=(capex!==null&&c===capex);
+          return '<tr'+(hi?' class="hi"':'')+'><td>'+(c===0?'없음':fmt(c,1)+'억원')+'</td>'+
+            '<td>'+fmt(b.fac,1)+'억</td><td>'+fmt(b.wk,1)+'억</td>'+
+            '<td><b>'+fmt(b.tot,1)+'억원</b></td></tr>';
+        }).join("")+'</tbody></table>'+
+        '<p class="warn-line">'+
+        (zero&&zero.tot>0
+          ? '운영에 쓰는 돈(운전자금)은 한도가 정해져 있어 설비를 많이 사도 더 늘지 않습니다.'
+          : '⚠ 기계 살 계획이 없으면 한 푼도 못 받습니다. 이 회사에서 가장 중요한 사실입니다.')+
+        '</p>'+
+        '<div class="ask"><b>대표님께 이것부터 물어보세요</b><br>'+
+        '&ldquo;중진공에서 빌린 돈이 지금 얼마나 남아 있습니까?&rdquo;<br>'+
+        '<span>은행 대출은 상관없고 <b>중진공 정책자금 잔액</b>만 해당합니다. '+
+        '이 금액이 위 &lsquo;쓸 수 있는 여유&rsquo;에서 빠지기 때문에, 이것 하나로 결과가 완전히 달라집니다.</span></div>'+
+        '</div>';
+
+      if(bonus)html+='<div class="ehint" style="border-color:var(--ok)"><b>운전자금 한도 우대 대상입니다.</b> '+
+        esc(bonus)+' → 연간 5억 → <b>10억</b>. <span style="color:var(--muted)">근거 · 별표3 용도별 대출한도 우대기준 (p43)</span></div>';
+
+      if(funds.some(function(f){return f.ann&&!f.workSolo;}))
+        html+='<div class="ehint">혁신성장지원자금의 운전자금은 <b>시설자금을 함께 받은 기업의 초기가동비</b>만 지원되며 '+
+          '시설자금의 50% 이내입니다. 시설 투자 계획이 없으면 운전자금 단독 신청은 불가합니다. '+
+          '(지식서비스산업·사회적경제기업·AX 스프린트는 예외)</div>';
+      html+='<div class="ehint"><b>이 숫자는 신청 가능한 상한입니다.</b> '+
+        '실제 대출액은 중진공 기업평가(기술성·사업성), 신용위험등급, 담보 종류, 관할 지역본부 예산 잔액에 따라 이보다 줄어듭니다. '+
+        '공고에는 최종 금액을 정하는 공식이 없으므로 누구도 미리 확정할 수 없습니다.</div></div>';
+
+      html+='<h2 class="step" style="margin-top:28px"><span>상세</span>신청 가능한 자금 '+funds.length+'개</h2>';
+      html+=funds.map(function(f){
+        return '<div class="fund'+(f.soft?' soft':'')+'"><div class="fhead">'+
+          '<h4>'+esc(f.n)+'</h4><span class="fpill">'+esc(f.tag)+'</span></div>'+
+          '<dl class="terms"><dt>대출한도</dt><dd>'+esc(f.limit)+'</dd>'+
+          '<dt>대출기간</dt><dd>'+esc(f.term)+'</dd>'+
+          '<dt>대출금리</dt><dd>'+esc(f.rate)+'</dd></dl>'+
+          '<p style="margin:12px 0 0;font-size:13.2px;color:var(--ink-2);line-height:1.7">'+esc(f.note)+'</p>'+
+          '<div class="fsrc">근거 · 2026년도 정책자금 융자계획 변경공고(제2026-464호) '+esc(f.p)+'</div></div>';
+      }).join("");
+      var tips=[];
+      if(v.O_focus)tips.push("중점지원분야를 영위하면 연간 예산의 일정 부분을 우선 배정받습니다 (참고1~4).");
+      if(v.O_ax)tips.push("AX 스프린트 우대트랙은 금리 0.1%p 인하와 최대 대출한도 60억→100억 우대가 적용됩니다 (참고14).");
+      if(v.O_inno)tips.push("벤처·이노비즈 보유 기업은 혁신형 중소기업으로 분류되며, 자체 기술만으로도 개발기술사업화자금 요건을 충족합니다 (참고7).");
+      tips.push("전체 융자한도는 기존 대출 잔액과 신규 예정액을 합산해 기업당 60억원 이내로 운용됩니다 (공고 p7).");
+      tips.push("금리는 정책자금 기준금리가 분기마다 변동하며, 신용위험등급·담보종류·우대조건에 따라 가감됩니다 (별표4).");
+      html+='<div class="bonus"><b>추가로 알아두실 것</b><br>'+tips.map(function(t){return "· "+esc(t);}).join("<br>")+'</div>';
+      html+='<div class="bonus" style="border-color:var(--seal)"><b>신청은 직접 하시면 됩니다.</b><br>'+
+        '중진공 누리집 → 디지털지점 → 정책자금 온라인신청. 기업정보와 관할 지역본부를 고르고 신용정보 동의를 거치면, '+
+        '사전기업진단에서 중소기업·창업기업·융자제한기업 여부를 시스템이 판단하고 필수서류는 자동 제출됩니다.<br>'+
+        '<span style="color:var(--muted);font-size:12.3px">최종 제출 직전 화면에는 중진공이 넣은 &lsquo;정책자금 브로커 인식 현황&rsquo; 설문조사가 뜹니다. '+
+        '정부가 직접 브로커 실태를 조사하고 있다는 뜻입니다. (공고 참고15, p43~46)</span></div>';
+    }
+  }
+  R.innerHTML=html;
+}
+
+var autoT=null;
+function autoDiagnose(){
+  clearTimeout(autoT);
+  autoT=setTimeout(function(){
+    var any=num("age")!==null||num("emp")!==null||
+      Array.prototype.some.call(document.querySelectorAll('table.fin input'),
+        function(i){return i.value.trim()!=="";})||
+      Array.prototype.some.call(document.querySelectorAll('.chk input'),
+        function(i){return i.checked;});
+    if(any)diagnose();
+  },250);
+}
+document.getElementById("run").addEventListener("click",function(){
+  diagnose();
+  document.getElementById("result").scrollIntoView({behavior:"smooth",block:"start"});
+});
+document.addEventListener("input",autoDiagnose);
+document.addEventListener("change",autoDiagnose);
+
+/* ── 공고 탭 ── */
+var SNAPSHOT=[
+ {nm:"[전북] 2026년 중소기업 육성자금 융자 지원계획 수정 공고",id:"PBLN_000000000126642",
+  jrsd:"전북특별자치도",exc:"전북특별자치도경제통상진흥원",field:"금융",region:"전북",
+  period:"예산 소진시까지",end:null,
+  terms:"융자 지원규모 3,300억원 이내. 창업 및 경쟁력강화자금, 벤처기업육성자금, 경영안정자금, 거치기간 연장지원. 도내 중소기업 대상.",
+  law:"전북특별자치도 중소기업 육성기금 설치 및 운용 조례 제12조"},
+ {nm:"[부산] 2026년 2차 기계·부품산업 수출활성화 지원사업 (고유가 대응 원부자재 구매)",id:"PBLN_000000000126625",
+  jrsd:"부산광역시",exc:"부산시기계공업협동조합",field:"수출",region:"부산",
+  period:"예산 소진시까지",end:null,
+  terms:"매출액 300억원 이하 제조업(2025년도 기준), 기업당 최대 250만원. 원부자재 구매비 지원.",law:null},
+ {nm:"[부산] 2026년 신발산업 글로벌 파트너십 테크 Meet-Up Day 참가기업 모집",id:"PBLN_000000000126636",
+  jrsd:"부산광역시",exc:"부산테크노파크",field:"내수",region:"부산",
+  period:"2026-09-17 ~ 2026-09-29",end:"2026-09-29",
+  terms:"글로벌 브랜드 Descente, 온러닝을 초청해 부산 지역 신발 완제품·소재·부품·기계·IT 기업과 매칭. 기업당 프라이빗 피칭 15분, 영문번역·동시통역·전문가 사전진단 제공.",law:null},
+ {nm:"2026년 3차 소부장 공급망안정 종합지원 사업 공고",id:"PBLN_000000000126627",
+  jrsd:"산업통상자원부",exc:"대한무역투자진흥공사",field:"경영",region:"전국",
+  period:"2026-09-21 ~ 2026-09-30",end:"2026-09-30",
+  terms:"원부자재 수급 및 생산 안정화, 대체 수입처 발굴, 현장검증, 샘플원료 구매, 시험인증, 시운전 지원.",
+  law:"소재·부품·장비산업 경쟁력강화를 위한 특별조치법 제23조의4"},
+ {nm:"2026년 지스타 콘솔게임 공동관 참가기업 추가모집 공고",id:"PBLN_000000000126638",
+  jrsd:"문화체육관광부",exc:"한국콘텐츠진흥원",field:"내수",region:"전국",
+  period:"2026-09-17 ~ 2026-09-29",end:"2026-09-29",
+  terms:"콘솔게임 공동관 내 개별 부스, 공용 소개자료·홍보물 제작 및 배포, 현장 이벤트 운영. 시연 가능한 빌드 보유 개발사 대상.",law:null},
+ {nm:"2026년 베트남 녹색산업 시장개척단 참가기업 모집공고",id:"PBLN_000000000126622",
+  jrsd:"기후에너지환경부",exc:"한국환경산업협회",field:"수출",region:"전국",
+  period:"2026-09-17 ~ 2026-10-11",end:"2026-10-11",
+  terms:"베트남 현지 수출 상담회, 기술설명회, 간담회·포럼 참가 지원. 녹색산업 분야 기업 대상.",law:null}
+];
+var URLBASE="https://www.bizinfo.go.kr/sii/siia/selectSIIA200Detail.do?pblancId=";
+var DATA=SNAPSHOT.slice(), LIVE=false, UPDATED=null;
+var fstate={field:"",region:"",q:"",openOnly:true};
+
+function dday(end){
+  if(!end)return {t:"상시",open:true,past:false};
+  var now=new Date();now.setHours(0,0,0,0);
+  var gap=Math.round((new Date(end+"T00:00:00")-now)/86400000);
+  if(gap<0)return {t:"마감",open:false,past:true};
+  if(gap===0)return {t:"오늘 마감",open:false,past:false};
+  return {t:"D-"+gap,open:gap>7,past:false};
+}
+function linkOf(r){return r.url?r.url:URLBASE+encodeURIComponent(r.id||"");}
+function isOpen(r){return !dday(r.end).past;}
+
+function match(r,skip){
+  if(fstate.openOnly&&!isOpen(r))return false;
+  if(skip!=="field"&&fstate.field&&r.field!==fstate.field)return false;
+  if(skip!=="region"&&fstate.region&&r.region!==fstate.region)return false;
+  if(fstate.q){
+    var q=fstate.q.toLowerCase();
+    if((r.nm+" "+r.terms+" "+r.jrsd+" "+r.exc).toLowerCase().indexOf(q)<0)return false;
+  }
+  return true;
+}
+function tally(key){
+  var m={};
+  DATA.forEach(function(r){ if(match(r,key)) m[r[key]]=(m[r[key]]||0)+1; });
+  return m;
+}
+function chipHTML(f,v,label,n,on){
+  return '<button class="chip" type="button" data-f="'+f+'" data-v="'+esc(v)+'" aria-pressed="'+
+    (on?"true":"false")+'">'+esc(label)+(n!=null?'<b>'+n+'</b>':'')+'</button>';
+}
+function buildChips(){
+  var fm=tally("field"), total=0, keys;
+  Object.keys(fm).forEach(function(k){total+=fm[k];});
+  keys=Object.keys(fm).sort(function(a,b){return fm[b]-fm[a];});
+  var html=chipHTML("field","","전체",total,!fstate.field);
+  keys.forEach(function(k){html+=chipHTML("field",k,k,fm[k],fstate.field===k);});
+  if(fstate.field&&!fm[fstate.field])html+=chipHTML("field",fstate.field,fstate.field,0,true);
+  document.getElementById("fieldRow").innerHTML='<span class="flabel">분야</span>'+html;
+
+  var rm=tally("region"), rtot=0;
+  Object.keys(rm).forEach(function(k){rtot+=rm[k];});
+  var pri=["전국","부산"];
+  var rest=Object.keys(rm).filter(function(k){return pri.indexOf(k)<0;})
+    .sort(function(a,b){return rm[b]-rm[a];});
+  var order=pri.filter(function(k){return rm[k];}).concat(rest);
+  var rh=chipHTML("region","","전체",rtot,!fstate.region);
+  order.forEach(function(k){rh+=chipHTML("region",k,k==="전국"?"전국 단위":k,rm[k],fstate.region===k);});
+  if(fstate.region&&!rm[fstate.region])rh+=chipHTML("region",fstate.region,fstate.region,0,true);
+  document.getElementById("regionRow").innerHTML='<span class="flabel">지역</span>'+rh;
+}
+function renderList(){
+  var rows=DATA.filter(function(r){return match(r,null);});
+  document.getElementById("cnt").textContent=
+    rows.length?("공고 "+rows.length+"건"):"조건에 맞는 공고 없음";
+  var src=document.getElementById("srcline");
+  if(LIVE){
+    var t=UPDATED?new Date(UPDATED):new Date();
+    src.innerHTML='<span class="livedot"></span>기업마당 API 실시간 · 전체 '+DATA.length+
+      '건 · '+t.toLocaleString("ko-KR",{month:"numeric",day:"numeric",hour:"2-digit",minute:"2-digit"})+' 기준';
+  }else{
+    src.innerHTML='<span class="livedot off"></span>저장된 예시 '+DATA.length+'건 (서버 연결 대기)';
+  }
+  var list=document.getElementById("list");
+  if(!rows.length){list.innerHTML='<li class="empty">필터를 하나 풀거나 검색어를 지워보세요.</li>';return;}
+  if(rows.length>120)rows=rows.slice(0,120);
+  list.innerHTML=rows.map(function(r){
+    var d=dday(r.end);
+    return '<li class="card"><div class="meta">'+
+      '<span class="tag field">'+esc(r.field)+'</span><span class="tag">'+esc(r.region)+'</span>'+
+      '<span class="dday'+(d.open?" open":"")+'">'+esc(d.t)+'</span></div>'+
+      '<h3>'+esc(r.nm)+'</h3>'+
+      '<p class="org">'+esc(r.jrsd)+' · 수행 '+esc(r.exc)+' · 신청 '+esc(r.period)+'</p>'+
+      '<p class="terms">'+esc(r.terms)+'</p>'+
+      '<div class="src"><span>근거</span>'+
+      '<a href="'+esc(linkOf(r))+'" target="_blank" rel="noopener">공고 원문 보기</a>'+
+      (r.law?'<span>· '+esc(r.law)+'</span>':'')+'</div></li>';}).join("");
+}
+function paint(){buildChips();renderList();}
+
+function loadFeed(){
+  document.getElementById("cnt").textContent="기업마당에서 불러오는 중…";
+  fetch("/api/bizinfo",{headers:{Accept:"application/json"}})
+    .then(function(r){return r.json();})
+    .then(function(j){
+      if(!j||!j.ok||!j.items||!j.items.length)throw new Error(j&&j.error?j.error:"빈 응답");
+      DATA=j.items;LIVE=true;UPDATED=j.updatedAt;
+      document.getElementById("feednote").innerHTML=
+        '<b>이 목록은 서버가 기업마당 API에서 직접 받아옵니다.</b> 새 공고 등록과 마감이 자동 반영되며, '+
+        '화면을 열 때마다 최신 상태를 확인합니다(서버 캐시 1시간). '+
+        '공개된 공고 원문을 정리해 보여줄 뿐이며, 신청 대행이나 성공보수를 받지 않습니다.';
+      paint();
+    })
+    .catch(function(e){
+      LIVE=false;
+      document.getElementById("feednote").innerHTML=
+        '<b>지금은 저장된 예시 공고를 보여주고 있습니다.</b> 서버(/api/bizinfo)에 연결되지 않았습니다 — '+
+        esc(String(e.message||e))+'. Vercel에 배포하고 BIZINFO_KEY를 등록하면 실시간으로 바뀝니다.';
+      paint();
+    });
+}
+document.addEventListener("click",function(ev){
+  var btn=ev.target.closest?ev.target.closest(".chip[data-f]"):null;
+  if(!btn)return;
+  var f=btn.dataset.f, v=btn.dataset.v;
+  if(f==="openOnly"){fstate.openOnly=!!v;}
+  else{fstate[f]=v;}
+  document.querySelectorAll('.chip[data-f="'+f+'"]').forEach(function(b){
+    b.setAttribute("aria-pressed",b===btn?"true":"false");});
+  paint();
+});
+var qbox=document.getElementById("q"), qtimer=null;
+qbox.addEventListener("input",function(){
+  clearTimeout(qtimer);
+  qtimer=setTimeout(function(){fstate.q=qbox.value.trim();paint();},180);
+});
+document.getElementById("reload").addEventListener("click",loadFeed);
+/* ═══════════ 바우처 지원자격 ═══════════ */
+var VJOIN=[
+ {id:"J1",t:"지역특화프로젝트 레전드50+ 참여기업",d:"지자체·중기부 지역특화프로젝트에 참여 중인 기업"},
+ {id:"J2",t:"관할 지방중소벤처기업청 개별공고 모집요건에 해당",d:"지역자율형바우처. 부산은 부산지방중소벤처기업청 공고 확인"},
+ {id:"J3",t:"기업가형 소상공인 육성사업 참여기업",d:"민간투자 연계형 매칭융자(LIPS Ⅰ·Ⅱ), 로컬 크리에이터, 강한 소상공인 성장지원, 신사업창업사관학교 중 1개 이상 수행"}
+];
+var VBLOCK=[
+ {id:"B1",t:"금융기관 불량거래처로 규제 중",d:"회생인가·재창업자금 지원 등 재기지원 인정 기업은 참여 가능",ap:["in"]},
+ {id:"B2",t:"국세 또는 지방세 체납 (기업 또는 대표자)",d:"",ap:["in","ex"]},
+ {id:"B3",t:"휴업 또는 폐업 중",d:"",ap:["in","ex","sf"]},
+ {id:"B4",t:"혁신바우처 사업을 총 5회 이상 지원받음",d:"",ap:["in"]},
+ {id:"B5",t:"올해 이미 혁신바우처에 선정됨",d:"재기바우처 선정기업은 신청 가능",ap:["in"]},
+ {id:"B6",t:"불건전 영상게임기·도박게임장비 등 제조업",d:"",ap:["in"]},
+ {id:"B7",t:"보조금법 위반 등으로 정부 지원사업 참여제한 중",d:"",ap:["in","ex","sf"]},
+ {id:"S1",t:"산재보험 가입 근로자가 1명도 없음",d:"안전 보조금 — 사업주만 있는 경우 대상이 아닙니다",ap:["sf"]},
+ {id:"S2",t:"사내하청 사업장",d:"안전 보조금 — 원청 사업장 내 하청은 제외됩니다",ap:["sf"]},
+ {id:"S3",t:"상호출자제한기업집단 소속",d:"안전 보조금 제외 대상",ap:["sf"]},
+ {id:"S4",t:"올해 공단의 다른 보조금·융자 지원이 결정됨",d:"안전일터·건강일터·산재예방시설 융자 등과 중복 불가. 안전동행 최대한도를 이미 받은 경우 포함",ap:["sf"]}
+];
+function vbox(arr,host){
+  document.getElementById(host).innerHTML=arr.map(function(o){
+    return '<label class="chk" for="'+o.id+'"><input type="checkbox" id="'+o.id+'">'+
+      '<span>'+esc(o.t)+(o.d?'<em>'+esc(o.d)+'</em>':'')+'</span></label>';}).join("");
+}
+function blockedFor(key){
+  return VBLOCK.filter(function(o){return chk(o.id)&&o.ap.indexOf(key)>=0;});
+}
+vbox(VJOIN,"vjoin");vbox(VBLOCK,"vblock");
+
+function avgSales(){                       /* 억원 */
+  var sum=0,n=0;
+  for(var y=1;y<=3;y++){var v=val("sales",y);if(v!==null){sum+=v;n++;}}
+  return n?(sum/n)/100:null;               /* val은 백만원 → 억원 */
+}
+function syncVoucher(){
+  var a=avgSales(),box=document.getElementById("vsales");
+  if(a!==null&&!box.value){
+    box.value=Math.round(a*10)/10;
+    document.getElementById("vsalesNote").textContent="재무제표 3개년 평균으로 자동 계산됨";
+  }
+  var eb=document.getElementById("vemp"), e0=document.getElementById("emp").value;
+  if(e0&&!eb.value)eb.value=e0;
+  if(ksicTouched){
+    var ki=KSIC[document.getElementById("ksic").value];
+    var code=ki?ki.c:"";
+    document.getElementById("vmfg").value=/^C/.test(code)?"1":"0";
+    document.getElementById("vmfgNote").textContent=
+      "앞 화면에서 고른 업종("+ksicLabel()+")으로 자동 설정됨 — 다르면 직접 바꾸세요";
+  }
+}
+var ksicTouched=false;
+document.getElementById("ksic").addEventListener("change",function(){
+  ksicTouched=true;syncVoucher();});
+function mfg(){return document.getElementById("vmfg").value==="1";}
+function ksicLabel(){
+  var sel=document.getElementById("ksic");
+  var o=sel.options[sel.selectedIndex];
+  return o?o.textContent:"";
+}
+function baseRate(a){
+  if(a===null)return null;
+  if(a<=3)return 85;
+  if(a<=10)return 75;
+  if(a<=50)return 65;
+  if(a<=140)return 45;
+  if(a<=1800)return 40;
+  return null;
+}
+function won(m){                            /* 백만원 → 읽기 쉬운 표기 */
+  if(m>=100)return (Math.round(m/10)/10)+"억원";
+  return Math.round(m)+"백만원";
+}
+function exTrack(u){
+  if(u<1000)return {n:"내수기업",lim:30};
+  if(u<100000)return {n:"수출초보",lim:30};
+  if(u<1000000)return {n:"수출유망",lim:45};
+  if(u<5000000)return {n:"수출성장",lim:70};
+  return {n:"수출강소",lim:100};
+}
+function vcard(ok,name,pill,rows,src){
+  return '<div class="fund'+(ok?'':' soft')+'" style="border-left-color:'+
+    (ok?'var(--ok)':'var(--seal)')+'">'+
+    '<div class="fhead"><h4>'+esc(name)+'</h4><span class="fpill">'+esc(pill)+'</span></div>'+
+    '<dl class="terms">'+rows.map(function(r){
+      return '<dt>'+esc(r[0])+'</dt><dd>'+r[1]+'</dd>';}).join("")+'</dl>'+
+    (src?'<p class="fsrc">'+src+'</p>':'')+'</div>';
+}
+function voucherDiagnose(){
+  var a=parseFloat(document.getElementById("vsales").value);
+  if(isNaN(a))a=avgSales();
+  var usd=parseFloat(document.getElementById("vexport").value);
+  if(isNaN(usd))usd=0;
+  var prem=parseInt(document.getElementById("vprem").value,10)||0;
+  var isMfg=mfg(), out=[];
+
+  var emp=parseFloat(document.getElementById("vemp").value);
+  if(isNaN(emp))emp=null;
+  var bIn=blockedFor("in"), bEx=blockedFor("ex"), bSf=blockedFor("sf");
+  var blocked=bIn.concat(bEx,bSf).filter(function(o,i,a){return a.indexOf(o)===i;});
+
+  if(blocked.length){
+    out.push('<div class="verdict stop"><h3>제외 사유가 있습니다</h3>'+
+      '<p>아래 항목은 해당 사업의 신청 자격을 막습니다. 사업별 결과는 아래 카드에서 확인하세요.</p>'+
+      '<ol class="why">'+blocked.map(function(o){return '<li>'+esc(o.t)+'</li>';}).join("")+'</ol></div>');
+  }
+
+  /* ── 혁신바우처 ── */
+  var base=baseRate(a), rate=base===null?null:Math.min(base+prem,100);
+  var govMax=50;                                     /* 정부지원금 한도 백만원 */
+  var small=(a!==null&&a<=120);                      /* 제조 소기업 기준 */
+  var tracks=[
+    {key:"J1",n:"지역특화프로젝트연계형바우처",need:"레전드50+ 참여 + 제조업 중소기업",ok:isMfg&&chk("J1")},
+    {key:"J2",n:"지역자율형바우처",need:"지방중기청 개별공고 요건 + 제조업 중소기업",ok:isMfg&&chk("J2")},
+    {key:"J3",n:"지역소공인성장형바우처",need:"기업가형 소상공인 육성사업 참여 + 제조업 소기업",ok:isMfg&&chk("J3")&&small}
+  ];
+  var hit=tracks.filter(function(t){return t.ok;});
+  var pass=!bIn.length&&hit.length>0;
+
+  var rows=[
+    ["주업종",isMfg?'제조업 — 충족'+(ksicTouched?' ('+esc(ksicLabel())+')':''):
+      '<b style="color:var(--seal)">제조업이 아님으로 선택되어 있습니다 — 1단계 주업종을 확인하세요</b>'],
+    ["평균매출",a===null?'미입력':(Math.round(a*10)/10)+'억원'+(small?' · 소기업 기준(120억원 이하) 충족':'')],
+    ["해당 유형",hit.length?hit.map(function(t){return esc(t.n);}).join(", ")
+      :'<b style="color:var(--seal)">없음 — 2026년 2차는 위 3개 사업 참여기업 전용입니다</b>']
+  ];
+  if(rate!==null){
+    var total=govMax/(rate/100), self=total-govMax;
+    rows.push(["보조율",base+"% (평균매출 구간) + "+prem+"%p (지역 우대) = <b>"+rate+"%</b>"]);
+    rows.push(["한도",'정부지원금 최대 <b>'+won(govMax)+'</b> · 이때 자기부담 '+won(self)+
+      ' · 총 사용액 '+won(total)+'<br><span style="font-size:12.3px;color:var(--muted)">부가가치세는 별도 부담</span>']);
+  }
+  out.push(vcard(pass,"중소기업 혁신바우처",pass?"신청 가능":"해당 없음",rows,
+    '중소벤처기업부 공고 제2026-133호 · 컨설팅·기술지원·마케팅 8개 프로그램, 기업당 정부지원금 50백만원 이내<br>'+
+    '2차 신청기간은 2026-02-27 ~ 03-13로 이미 종료되었습니다. 다음 차수는 「지원사업 공고」 탭에서 <b>혁신바우처</b>로 검색하세요.'));
+
+  /* ── 수출바우처 ── */
+  var tr=exTrack(usd);
+  var erate=(a===null)?null:(a<100?70:(a<300?60:50));
+  var erows=[
+    ["지원요건","「중소기업기본법」 제2조에 따른 중소기업 — 업종 제한 없음"],
+    ["수출실적",usd?usd.toLocaleString("ko-KR")+"달러":"0달러 (내수기업)"],
+    ["해당 트랙",'<b>'+esc(tr.n)+'</b> · 지원한도 '+won(tr.lim)],
+    ["보조율",erate===null?"매출액 미입력":erate+"% (매출 "+(a<100?"100억원 미만":(a<300?"100~300억원":"300억원 이상"))+")"]
+  ];
+  if(erate!==null){
+    var et=tr.lim/(erate/100);
+    erows.push(["자기부담",won(et-tr.lim)+" · 총 사용액 "+won(et)]);
+  }
+  out.push(vcard(!bEx.length,"수출바우처 (수출지원기반활용사업)",
+    bEx.length?"제외 대상":"신청 가능",erows,
+    '2026년 수출지원기반활용사업 모집공고 요약 · 전년도 수출액으로 트랙이 갈리고 매출액으로 보조율이 갈립니다.<br>'+
+    '<b>공고문 원문 미반영</b> — 차수마다 한도와 보조율이 바뀌므로 최신 공고로 확인하세요.'));
+
+  /* ── 안전동행 지원사업 ── */
+  var sizeOk=(emp!==null&&emp<50)||(a!==null&&a<=1500);
+  var sfOk=isMfg&&sizeOk&&!bSf.length;
+  var srows=[
+    ["지원요건","제조업 사업장으로 상시근로자 50명 미만이거나 중소기업기본법 시행령 별표1 매출기준 이하 · 산재보험 가입 근로자 1명 이상"],
+    ["주업종",isMfg?'제조업 — 충족':'<b style="color:var(--seal)">제조업이 아님 — 대상 아님</b>'],
+    ["규모",emp!==null?(emp+'명'+(emp<50?' · 50인 미만 충족':' · 50인 이상 — 매출기준으로 판정')):
+      (a!==null?('상시근로자 미입력 · 평균매출 '+(Math.round(a*10)/10)+'억원으로 판정'):'상시근로자·매출 모두 미입력')],
+    ["세부사업","격차완화 · 상생협력지원 · 상생협력기금 3종. 위험공정 개선 설비 비용의 일부를 지원합니다"],
+    ["중복제한","안전일터 조성지원, 건강일터 조성지원, 산재예방시설 융자 등 공단의 다른 지원과 같은 해에 중복 불가"]
+  ];
+  if(bSf.length)srows.push(["제외 사유",'<b style="color:var(--seal)">'+
+    bSf.map(function(o){return esc(o.t);}).join(" / ")+'</b>']);
+  out.push(vcard(sfOk,"안전동행 지원사업",sfOk?"신청 가능":"대상 아님",srows,
+    '고용노동부·한국산업안전보건공단 · 신청은 공단 종합지원시스템에서 합니다.<br>'+
+    '<b>공고문 원문 미반영</b> — 보조율과 사업장당 한도는 연도·유형별로 달라지므로 해당 연도 공고문으로 확인하세요. '+
+    '기업마당 API에는 올라오지 않는 사업이라 「지원사업 공고」 탭에서는 검색되지 않습니다.'));
+
+  if(!pass&&!bIn.length){
+    out.push('<div class="ask">혁신바우처는 지금 차수에 해당 사업 참여기업만 받습니다. '+
+      '해당이 없어도 수출바우처는 별도로 신청할 수 있습니다.'+
+      '<span>다음 차수 공고가 뜨면 「지원사업 공고」 탭 검색창에 <b>바우처</b>를 넣어 바로 확인하세요.</span></div>');
+  }
+  document.getElementById("vresult").innerHTML=out.join("");
+  document.getElementById("vresult").scrollIntoView({behavior:"smooth",block:"start"});
+}
+document.getElementById("vgo").addEventListener("click",voucherDiagnose);
+document.getElementById("vreset").addEventListener("click",function(){
+  ["vsales","vexport","vemp"].forEach(function(id){document.getElementById(id).value="";});
+  VJOIN.concat(VBLOCK).forEach(function(o){document.getElementById(o.id).checked=false;});
+  document.getElementById("vresult").innerHTML="";
+});
+var tabs=[document.getElementById("t1"),document.getElementById("t2"),document.getElementById("t3")];
+tabs.forEach(function(tab){
+  tab.addEventListener("click",function(){
+    tabs.forEach(function(t){
+      var on=t===tab;
+      t.setAttribute("aria-selected",on?"true":"false");
+      document.getElementById(t.getAttribute("aria-controls")).hidden=!on;});
+    if(tab.id==="t3")syncVoucher();
+  });
+});
+loadFeed();recalc();
+</script>
+</body>
+</html>
